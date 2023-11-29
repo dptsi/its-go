@@ -26,8 +26,9 @@ type ForbiddenParam struct {
 
 // Forbidden is an error that occurs when the request is forbidden
 type Forbidden struct {
-	msg     string
-	details string
+	msg                   string
+	details               string
+	isDetailRemovedInProd bool
 }
 
 func NewForbidden(param ForbiddenParam) Forbidden {
@@ -37,10 +38,7 @@ func NewForbidden(param ForbiddenParam) Forbidden {
 	if param.Message == "" {
 		param.Message = "forbidden"
 	}
-	if param.RemoveDetailsInProduction {
-		param.Details = ""
-	}
-	return Forbidden{param.Message, param.Details}
+	return Forbidden{param.Message, param.Details, param.RemoveDetailsInProduction}
 }
 
 func (e Forbidden) Error() string {
@@ -49,4 +47,8 @@ func (e Forbidden) Error() string {
 
 func (e Forbidden) Details() string {
 	return e.details
+}
+
+func (e Forbidden) IsDetailRemovedInProd() bool {
+	return e.isDetailRemovedInProd
 }

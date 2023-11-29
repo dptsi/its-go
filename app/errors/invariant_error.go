@@ -18,11 +18,6 @@ type InvariantParam struct {
 	//
 	// Default to ""
 	Details string
-
-	// RemoveDetailsInProduction is a flag that indicates whether to remove details in production
-	//
-	// Default to true
-	RemoveDetailsInProduction bool
 }
 
 // Invariant is an error that occurs when invariant is violated
@@ -38,9 +33,6 @@ func NewInvariant(param InvariantParam) Invariant {
 	}
 	if param.Message == "" {
 		param.Message = "invariant_error"
-	}
-	if param.RemoveDetailsInProduction {
-		param.Details = ""
 	}
 	return Invariant{param.Code, param.Message, param.Details}
 }
