@@ -2,7 +2,7 @@ package errors
 
 import "net/http"
 
-type NotFoundErrorParam struct {
+type NotFoundParam struct {
 	// Code is the status code of the error
 	//
 	// Default to HTTP status code 404
@@ -14,26 +14,26 @@ type NotFoundErrorParam struct {
 	Msg string
 }
 
-// NotFoundError is an error that occurs when the resource is not found
-type NotFoundError struct {
+// NotFound is an error that occurs when the resource is not found
+type NotFound struct {
 	code int
 	msg  string
 }
 
-func NewNotFoundError(param NotFoundErrorParam) NotFoundError {
+func NewNotFound(param NotFoundParam) NotFound {
 	if param.Code == 0 {
 		param.Code = http.StatusNotFound
 	}
 	if param.Msg == "" {
 		param.Msg = "not_found"
 	}
-	return NotFoundError{param.Code, param.Msg}
+	return NotFound{param.Code, param.Msg}
 }
 
-func (e NotFoundError) Code() int {
+func (e NotFound) Code() int {
 	return e.code
 }
 
-func (e NotFoundError) Error() string {
+func (e NotFound) Error() string {
 	return e.msg
 }

@@ -2,7 +2,7 @@ package errors
 
 import "net/http"
 
-type ForbiddenErrorParam struct {
+type ForbiddenParam struct {
 	// Code is the status code of the error
 	//
 	// Default to HTTP status code 403
@@ -24,13 +24,13 @@ type ForbiddenErrorParam struct {
 	RemoveDetailsInProduction bool
 }
 
-// ForbiddenError is an error that occurs when the request is forbidden
-type ForbiddenError struct {
+// Forbidden is an error that occurs when the request is forbidden
+type Forbidden struct {
 	msg     string
 	details string
 }
 
-func NewForbiddenError(param ForbiddenErrorParam) ForbiddenError {
+func NewForbidden(param ForbiddenParam) Forbidden {
 	if param.Code == 0 {
 		param.Code = http.StatusForbidden
 	}
@@ -40,13 +40,13 @@ func NewForbiddenError(param ForbiddenErrorParam) ForbiddenError {
 	if param.RemoveDetailsInProduction {
 		param.Details = ""
 	}
-	return ForbiddenError{param.Message, param.Details}
+	return Forbidden{param.Message, param.Details}
 }
 
-func (e ForbiddenError) Error() string {
+func (e Forbidden) Error() string {
 	return e.msg
 }
 
-func (e ForbiddenError) Details() string {
+func (e Forbidden) Details() string {
 	return e.details
 }

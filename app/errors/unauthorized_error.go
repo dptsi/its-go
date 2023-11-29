@@ -2,25 +2,25 @@ package errors
 
 import "net/http"
 
-type UnauthorizedErrorParam struct {
+type UnauthorizedParam struct {
 	// Code is the status code of the error
 	//
 	// Default to HTTP status code 401
 	Code int
 }
 
-// UnauthorizedError is an error that occurs when the request is unauthorized
-type UnauthorizedError struct {
+// Unauthorized is an error that occurs when the request is unauthorized
+type Unauthorized struct {
 	code int
 }
 
-func NewUnauthorizedError(param UnauthorizedErrorParam) UnauthorizedError {
+func NewUnauthorized(param UnauthorizedParam) Unauthorized {
 	if param.Code == 0 {
 		param.Code = http.StatusUnauthorized
 	}
-	return UnauthorizedError{param.Code}
+	return Unauthorized{param.Code}
 }
 
-func (e UnauthorizedError) Error() string {
+func (e Unauthorized) Error() string {
 	return "unauthorized"
 }

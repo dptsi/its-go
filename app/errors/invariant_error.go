@@ -2,8 +2,8 @@ package errors
 
 import "net/http"
 
-// InvariantErrorParam is a struct that contains parameters for InvariantError
-type InvariantErrorParam struct {
+// InvariantParam is a struct that contains parameters for InvariantError
+type InvariantParam struct {
 	// Code is the status code of the error
 	//
 	// Default to HTTP status code 400
@@ -25,14 +25,14 @@ type InvariantErrorParam struct {
 	RemoveDetailsInProduction bool
 }
 
-// InvariantError is an error that occurs when invariant is violated
-type InvariantError struct {
+// Invariant is an error that occurs when invariant is violated
+type Invariant struct {
 	code    int
 	message string
 	details string
 }
 
-func NewInvariantError(param InvariantErrorParam) InvariantError {
+func NewInvariant(param InvariantParam) Invariant {
 	if param.Code == 0 {
 		param.Code = http.StatusBadRequest
 	}
@@ -42,21 +42,21 @@ func NewInvariantError(param InvariantErrorParam) InvariantError {
 	if param.RemoveDetailsInProduction {
 		param.Details = ""
 	}
-	return InvariantError{param.Code, param.Message, param.Details}
+	return Invariant{param.Code, param.Message, param.Details}
 }
 
-func (e InvariantError) Code() int {
+func (e Invariant) Code() int {
 	return e.code
 }
 
-func (e InvariantError) Message() string {
+func (e Invariant) Message() string {
 	return e.message
 }
 
-func (e InvariantError) Details() string {
+func (e Invariant) Details() string {
 	return e.details
 }
 
-func (e InvariantError) Error() string {
+func (e Invariant) Error() string {
 	return e.message
 }
