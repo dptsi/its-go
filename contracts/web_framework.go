@@ -48,3 +48,5 @@ type WebFrameworkContext interface {
 
 	context.Context
 }
+
+type HandlerFunc func(ctx WebFrameworkContext)
