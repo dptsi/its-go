@@ -1,8 +1,10 @@
 package sessions
 
-import "github.com/gin-gonic/gin"
+import (
+	"bitbucket.org/dptsi/base-go-libraries/contracts"
+)
 
-func Default(ctx *gin.Context) *Data {
+func Default(ctx contracts.WebFrameworkContext) *Data {
 	dataIf, exists := ctx.Get("session")
 	if !exists {
 		panic("session not found in context, make sure you have called session.StartSession middleware")
