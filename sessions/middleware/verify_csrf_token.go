@@ -19,7 +19,7 @@ func NewVerifyCSRFToken() *VerifyCSRFToken {
 	return &VerifyCSRFToken{}
 }
 
-func (m *VerifyCSRFToken) VerifyCSRFToken(ctx *gin.Context) {
+func (m *VerifyCSRFToken) Execute(ctx *gin.Context) {
 	sess := sessions.Default(ctx)
 	sessionCSRFToken := sess.CSRFToken()
 	req := ctx.Request
