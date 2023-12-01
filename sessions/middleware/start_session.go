@@ -10,7 +10,7 @@ import (
 
 type StartSession struct {
 	sessionsConfig sessions.SessionsConfig
-	storage        sessions.Storage
+	storage        contracts.SessionStorage
 	cookieUtil     sessions.CookieUtil
 }
 
@@ -27,14 +27,20 @@ func (m *StartSession) Execute(ctx contracts.WebFrameworkContext) {
 
 	if err == nil {
 		// Get session data from storage
-		sess, err := m.storage.Get(ctx, sessionId)
+		sessInterface, err := m.storage.Get(ctx, sessionId)
 		if err != nil {
 			ctx.Error(err)
 			ctx.Abort()
 			return
 		}
-		if sess != nil {
-			data = sess
+		sessionData, ok := sessInterface.(*sessions.Data)
+		if !ok {
+			ctx.Error(fmt.Errorf("start session middleware: session data is not of type session.Data"))
+			ctx.Abort()
+			return
+		}
+		if sessionData != nil {
+			data = sessionData
 		}
 	}
 	if data == nil {
