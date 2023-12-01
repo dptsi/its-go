@@ -6,6 +6,7 @@ import (
 
 	"bitbucket.org/dptsi/base-go-libraries/auth/internal/utils"
 	"bitbucket.org/dptsi/base-go-libraries/contracts"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,9 +20,9 @@ func NewBasicAuthMiddleware(userRepo contracts.UserRepository) *BasicAuthMiddlew
 	}
 }
 
-func (m *BasicAuthMiddleware) Handle() contracts.HandlerFunc {
-	return func(ctx contracts.WebFrameworkContext) {
-		req := ctx.Request()
+func (m *BasicAuthMiddleware) Handle() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		req := ctx.Request
 		raw := req.Header.Get("Authorization")
 
 		if raw == "" {

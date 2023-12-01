@@ -7,10 +7,11 @@ import (
 	"bitbucket.org/dptsi/base-go-libraries/auth/internal/utils"
 	"bitbucket.org/dptsi/base-go-libraries/contracts"
 	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"github.com/gin-gonic/gin"
 )
 
-func Auth() contracts.HandlerFunc {
-	return func(ctx contracts.WebFrameworkContext) {
+func Auth() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 		sess := sessions.Default(ctx)
 		userIf, ok := sess.Get("user")
 		if !ok {

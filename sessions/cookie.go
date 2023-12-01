@@ -3,7 +3,7 @@ package sessions
 import (
 	"net/http"
 
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
+	"github.com/gin-gonic/gin"
 )
 
 type SessionsConfig struct {
@@ -19,7 +19,13 @@ type CookieUtil struct {
 	cfg SessionsConfig
 }
 
-func (c *CookieUtil) AddSessionCookieToResponse(ctx contracts.WebFrameworkContext, sess *Data) {
+func NewCookieUtil(cfg SessionsConfig) *CookieUtil {
+	return &CookieUtil{
+		cfg: cfg,
+	}
+}
+
+func (c *CookieUtil) AddSessionCookieToResponse(ctx *gin.Context, sess *Data) {
 	ctx.SetSameSite(http.SameSiteLaxMode)
 	// Set session cookie
 	ctx.SetCookie(c.cfg.Name, sess.Id(), c.cfg.MaxAge, c.cfg.Path, c.cfg.Domain, c.cfg.Secure, true)

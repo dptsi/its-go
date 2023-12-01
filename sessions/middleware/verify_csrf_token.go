@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"bitbucket.org/dptsi/base-go-libraries/app/errors"
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
 	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 var errInvalidCSRFToken = errors.NewForbidden(errors.ForbiddenParam{
@@ -15,10 +15,14 @@ var methodsWithoutCSRFToken = []string{"GET", "HEAD", "OPTIONS"}
 type VerifyCSRFToken struct {
 }
 
-func (m *VerifyCSRFToken) VerifyCSRFToken(ctx contracts.WebFrameworkContext) {
+func NewVerifyCSRFToken() *VerifyCSRFToken {
+	return &VerifyCSRFToken{}
+}
+
+func (m *VerifyCSRFToken) VerifyCSRFToken(ctx *gin.Context) {
 	sess := sessions.Default(ctx)
 	sessionCSRFToken := sess.CSRFToken()
-	req := ctx.Request()
+	req := ctx.Request
 	requestCSRFToken := req.Header.Get("X-CSRF-TOKEN")
 
 	// Skip CSRF token verification for some methods

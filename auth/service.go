@@ -9,13 +9,14 @@ import (
 	"bitbucket.org/dptsi/base-go-libraries/auth/internal/utils"
 	"bitbucket.org/dptsi/base-go-libraries/contracts"
 	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 type Service struct {
 	sessionStorage contracts.SessionStorage
 }
 
-func (s *Service) Login(ctx contracts.WebFrameworkContext, u *contracts.User) error {
+func (s *Service) Login(ctx *gin.Context, u *contracts.User) error {
 	sess := sessions.Default(ctx)
 	userData := internalContract.UserSessionData{
 		Id:                strings.ToLower(u.Id()),
@@ -34,7 +35,7 @@ func (s *Service) Login(ctx contracts.WebFrameworkContext, u *contracts.User) er
 	return s.sessionStorage.Save(ctx, sess)
 }
 
-func (s *Service) Logout(ctx contracts.WebFrameworkContext) error {
+func (s *Service) Logout(ctx *gin.Context) error {
 	sess := sessions.Default(ctx)
 	sess.Delete("user.id")
 	sess.Delete("user.active_role")
@@ -42,7 +43,7 @@ func (s *Service) Logout(ctx contracts.WebFrameworkContext) error {
 	return s.sessionStorage.Save(ctx, sess)
 }
 
-func (s *Service) User(ctx contracts.WebFrameworkContext) *contracts.User {
+func (s *Service) User(ctx *gin.Context) *contracts.User {
 	uInterface, exist := ctx.Get(utils.UserKey)
 	if !exist {
 		panic("cannot get user info, forgot to add auth middleware?")

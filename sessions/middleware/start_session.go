@@ -6,6 +6,7 @@ import (
 
 	"bitbucket.org/dptsi/base-go-libraries/contracts"
 	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 type StartSession struct {
@@ -14,7 +15,15 @@ type StartSession struct {
 	cookieUtil     sessions.CookieUtil
 }
 
-func (m *StartSession) Execute(ctx contracts.WebFrameworkContext) {
+func NewStartSession(sessionsConfig sessions.SessionsConfig, storage contracts.SessionStorage, cookieUtil sessions.CookieUtil) *StartSession {
+	return &StartSession{
+		sessionsConfig: sessionsConfig,
+		storage:        storage,
+		cookieUtil:     cookieUtil,
+	}
+}
+
+func (m *StartSession) Execute(ctx *gin.Context) {
 	if m.storage == nil {
 		err := errors.New("session storage not configured")
 		ctx.Error(fmt.Errorf("start session middleware: %w", err))
