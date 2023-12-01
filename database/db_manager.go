@@ -59,7 +59,7 @@ func (m *Manager) AddDatabase(name string, cfg Config) error {
 		log.Println("Successfully connected to SQL Server database!")
 		m.databases[name] = NewDatabase(db)
 	case "postgres":
-		dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=verify-full", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
+		dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 		log.Println("Connecting to PostgreSQL database...")
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {

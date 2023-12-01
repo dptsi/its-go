@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"bitbucket.org/dptsi/base-go-libraries/contracts"
 	"bitbucket.org/dptsi/base-go-libraries/sessions"
 	"gorm.io/gorm"
 )
@@ -29,7 +30,7 @@ func NewGorm(db *gorm.DB) *Gorm {
 	return &Gorm{db}
 }
 
-func (g *Gorm) Get(ctx context.Context, id string) (*sessions.Data, error) {
+func (g *Gorm) Get(ctx context.Context, id string) (contracts.SessionData, error) {
 	var data GormData
 	if err := g.db.Table(TableName).First(&data, "id = ?", id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -45,7 +46,7 @@ func (g *Gorm) Get(ctx context.Context, id string) (*sessions.Data, error) {
 	return sess, nil
 }
 
-func (g *Gorm) Save(ctx context.Context, data *sessions.Data) error {
+func (g *Gorm) Save(ctx context.Context, data contracts.SessionData) error {
 	return g.db.Table(TableName).Save(&GormData{data.Id(), data.Data(), data.ExpiredAt(), data.CSRFToken()}).Error
 }
 
