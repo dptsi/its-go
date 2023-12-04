@@ -43,12 +43,7 @@ func (m *StartSession) Execute(ctx *gin.Context) {
 			return
 		}
 		sessionData, ok := sessInterface.(*sessions.Data)
-		if !ok {
-			ctx.Error(fmt.Errorf("start session middleware: session data is not of type session.Data"))
-			ctx.Abort()
-			return
-		}
-		if sessionData != nil {
+		if ok && sessionData != nil {
 			data = sessionData
 		}
 	}

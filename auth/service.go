@@ -16,6 +16,12 @@ type Service struct {
 	sessionStorage contracts.SessionStorage
 }
 
+func NewService(sessionStorage contracts.SessionStorage) *Service {
+	return &Service{
+		sessionStorage: sessionStorage,
+	}
+}
+
 func (s *Service) Login(ctx *gin.Context, u *contracts.User) error {
 	sess := sessions.Default(ctx)
 	userData := internalContract.UserSessionData{
