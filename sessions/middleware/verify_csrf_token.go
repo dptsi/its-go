@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
-	"bitbucket.org/dptsi/base-go-libraries/app/errors"
-	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"bitbucket.org/dptsi/go-framework/app/errors"
+	"bitbucket.org/dptsi/go-framework/sessions"
 	"github.com/gin-gonic/gin"
 )
 

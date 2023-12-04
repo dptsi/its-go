@@ -8,9 +8,9 @@ import (
 	"io"
 	"net/http"
 
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
-	"bitbucket.org/dptsi/base-go-libraries/oidc"
-	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/oidc"
+	"bitbucket.org/dptsi/go-framework/sessions"
 	"golang.org/x/oauth2"
 )
 

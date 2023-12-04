@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
+	"bitbucket.org/dptsi/go-framework/contracts"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/google/uuid"
 	"golang.org/x/oauth2"

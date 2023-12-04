@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
-	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/sessions"
 	"github.com/gin-gonic/gin"
 )
 

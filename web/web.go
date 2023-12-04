@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"bitbucket.org/dptsi/base-go-libraries/app/errors"
+	"bitbucket.org/dptsi/go-framework/app/errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"

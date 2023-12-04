@@ -3,13 +3,19 @@ package middleware
 import (
 	"fmt"
 
-	"bitbucket.org/dptsi/base-go-libraries/app/errors"
-	"bitbucket.org/dptsi/base-go-libraries/auth"
+	"bitbucket.org/dptsi/go-framework/app/errors"
+	"bitbucket.org/dptsi/go-framework/auth"
 	"github.com/gin-gonic/gin"
 )
 
 type ActiveRole struct {
 	service auth.Service
+}
+
+func NewActiveRole(service auth.Service) *ActiveRole {
+	return &ActiveRole{
+		service: service,
+	}
 }
 
 func (m *ActiveRole) ActiveRoleIn(roles ...string) gin.HandlerFunc {

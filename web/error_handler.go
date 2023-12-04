@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
-	commonErrors "bitbucket.org/dptsi/base-go-libraries/app/errors"
+	commonErrors "bitbucket.org/dptsi/go-framework/app/errors"
 )
 
 func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {

@@ -4,8 +4,8 @@ import (
 	"encoding/base64"
 	"strings"
 
-	"bitbucket.org/dptsi/base-go-libraries/auth/internal/utils"
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
+	"bitbucket.org/dptsi/go-framework/auth/internal/utils"
+	"bitbucket.org/dptsi/go-framework/contracts"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )

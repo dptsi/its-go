@@ -1,6 +1,6 @@
 package adapters
 
-import "bitbucket.org/dptsi/base-go-libraries/contracts"
+import "bitbucket.org/dptsi/go-framework/contracts"
 
 type SliceUser struct {
 	Id             string

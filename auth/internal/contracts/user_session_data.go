@@ -1,6 +1,6 @@
 package contracts
 
-import "bitbucket.org/dptsi/base-go-libraries/contracts"
+import "bitbucket.org/dptsi/go-framework/contracts"
 
 type UserSessionData struct {
 	Id                string           `json:"id"`

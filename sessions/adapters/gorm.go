@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
-	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/sessions"
 	"gorm.io/gorm"
 )
 

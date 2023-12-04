@@ -3,10 +3,10 @@ package middleware
 import (
 	"encoding/json"
 
-	internalContract "bitbucket.org/dptsi/base-go-libraries/auth/internal/contracts"
-	"bitbucket.org/dptsi/base-go-libraries/auth/internal/utils"
-	"bitbucket.org/dptsi/base-go-libraries/contracts"
-	"bitbucket.org/dptsi/base-go-libraries/sessions"
+	internalContract "bitbucket.org/dptsi/go-framework/auth/internal/contracts"
+	"bitbucket.org/dptsi/go-framework/auth/internal/utils"
+	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/sessions"
 	"github.com/gin-gonic/gin"
 )
 
