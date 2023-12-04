@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"net/http"
+
 	"bitbucket.org/dptsi/base-go-libraries/app/errors"
 	"bitbucket.org/dptsi/base-go-libraries/sessions"
 	"github.com/gin-gonic/gin"
@@ -40,4 +42,19 @@ func (m *VerifyCSRFToken) Execute(ctx *gin.Context) {
 	}
 
 	ctx.Next()
+}
+
+// CSRF cookie godoc
+// @Summary		Rute dummy untuk set CSRF-TOKEN cookie
+// @Router		/csrf-cookie [get]
+// @Tags		CSRF Protection
+// @Produce		json
+// @Success		200 {object} responses.GeneralResponse{code=int,message=string} "Cookie berhasil diset"
+// @Header      default {string} Set-Cookie "CSRF-TOKEN=00000000-0000-0000-0000-000000000000; Path=/"
+func CSRFCookieRoute(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    0,
+		"message": "success",
+		"data":    nil,
+	})
 }
