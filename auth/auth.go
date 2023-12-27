@@ -17,7 +17,7 @@ type GuardsConfig struct {
 }
 
 type Config struct {
-	guards map[string]GuardsConfig
+	Guards map[string]GuardsConfig
 }
 
 type Service struct {
@@ -74,7 +74,7 @@ func (a *Service) getGuard(ctx *web.Context) (key string, guard contracts.AuthGu
 	if key == "" {
 		key = defaultGuard
 	}
-	cfg, exists := a.cfg.guards[key]
+	cfg, exists := a.cfg.Guards[key]
 	if !exists {
 		return key, nil, fmt.Errorf("auth guard \"%s\" not found", key)
 	}

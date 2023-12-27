@@ -25,53 +25,58 @@ type Config struct {
 	Database string
 }
 
-func NewService() *Service {
-	return &Service{
-		databases: make(map[string]*Database),
+func NewService(databasesConfig map[string]Config) (*Service, error) {
+	databases := make(map[string]*Database, len(databasesConfig))
+	for name, cfg := range databasesConfig {
+		log.Printf("Adding database %s...\n", name)
+		if name == "" {
+			name = DefaultDatabaseName
+		}
+		db, err := createDatabase(cfg)
+		if err != nil {
+			return nil, fmt.Errorf("database service: new service: error creating database with name \"%s\": %w", name, err)
+		}
+		databases[name] = db
 	}
+
+	return &Service{
+		databases: databases,
+	}, nil
 }
 
-func (m *Service) AddDatabase(name string, cfg Config) error {
-	log.Printf("Adding database %s...\n", name)
-	if _, exists := m.databases[name]; exists {
-		return fmt.Errorf("database %s already exists", name)
-	}
-	if name == "" {
-		name = DefaultDatabaseName
-	}
+func createDatabase(cfg Config) (*Database, error) {
 	switch cfg.Driver {
 	case "sqlite":
 		// Contoh penggunaan adapter GORM dengan SQLite
 		log.Println("Connecting to SQLite database...")
 		db, err := gorm.Open(sqlite.Open(cfg.Database), &gorm.Config{})
 		if err != nil {
-			return fmt.Errorf("SQLite connection error: %w", err)
+			return nil, fmt.Errorf("SQLite connection error: %w", err)
 		}
 		log.Println("Successfully connected to SQLite database!")
-		m.databases[name] = db
+		return db, nil
 	case "sqlserver":
 		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 		log.Println("Connecting to SQL Server database...")
 		db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 		if err != nil {
-			return fmt.Errorf("SQL Server connection error: %w", err)
+			return nil, fmt.Errorf("SQL Server connection error: %w", err)
 		}
 		log.Println("Successfully connected to SQL Server database!")
-		m.databases[name] = db
+		return db, nil
 	case "postgres":
 		dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 		log.Println("Connecting to PostgreSQL database...")
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
-			return fmt.Errorf("PostgreSQL connection error: %w", err)
+			return nil, fmt.Errorf("PostgreSQL connection error: %w", err)
 		}
 		log.Println("Successfully connected to PostgreSQL database!")
-		m.databases[name] = db
+		return db, nil
 	default:
-		return fmt.Errorf("unknown database driver %s", cfg.Driver)
+		return nil, fmt.Errorf("unknown database driver %s", cfg.Driver)
 	}
 
-	return nil
 }
 
 func (m *Service) GetDatabase(name string) *Database {
