@@ -1,8 +1,8 @@
 package sessions
 
-import "github.com/gin-gonic/gin"
+import "bitbucket.org/dptsi/go-framework/web"
 
-func Default(ctx *gin.Context) *Data {
+func Default(ctx *web.Context) *Data {
 	dataIf, exists := ctx.Get("session")
 	if !exists {
 		panic("session not found in context, make sure you have called session.StartSession middleware")

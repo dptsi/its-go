@@ -18,7 +18,7 @@ type Config struct {
 	Environment string
 }
 
-func SetupServer(cfg Config) (*gin.Engine, error) {
+func SetupServer(cfg Config) (*Engine, error) {
 	if cfg.IsDebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -38,22 +38,22 @@ func SetupServer(cfg Config) (*gin.Engine, error) {
 		})
 	}
 
-	r.Use(func(ctx *gin.Context) {
+	r.Use(func(ctx *Context) {
 		ctx.Set("request_id", uuid.NewString())
 	})
-	r.NoRoute(func(ctx *gin.Context) {
+	r.NoRoute(func(ctx *Context) {
 		ctx.Error(errors.NewNotFound(errors.NotFoundParam{}))
 		ctx.Abort()
 	})
 	r.HandleMethodNotAllowed = true
-	r.NoMethod(func(ctx *gin.Context) {
-		ctx.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{
+	r.NoMethod(func(ctx *Context) {
+		ctx.AbortWithStatusJSON(http.StatusMethodNotAllowed, H{
 			"code":    http.StatusMethodNotAllowed,
 			"message": "method_not_allowed",
 			"data":    nil,
 		})
 	})
-	r.Use(gin.CustomRecovery(func(ctx *gin.Context, err any) {
+	r.Use(gin.CustomRecovery(func(ctx *Context, err any) {
 		requestId, exists := ctx.Get("request_id")
 		data := map[string]interface{}{
 			"error": "server unable to handle error",
@@ -62,7 +62,7 @@ func SetupServer(cfg Config) (*gin.Engine, error) {
 			data["request_id"] = requestId
 		}
 
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, H{
 			"code":    statusCode[internalServerError],
 			"message": "internal_server_error",
 			"data":    data,

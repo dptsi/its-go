@@ -3,7 +3,7 @@ package sessions
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"bitbucket.org/dptsi/go-framework/web"
 )
 
 type SessionsConfig struct {
@@ -25,7 +25,7 @@ func NewCookieUtil(cfg SessionsConfig) *CookieUtil {
 	}
 }
 
-func (c *CookieUtil) AddSessionCookieToResponse(ctx *gin.Context, sess *Data) {
+func (c *CookieUtil) Write(ctx *web.Context, sess *Data) {
 	ctx.SetSameSite(http.SameSiteLaxMode)
 	// Set session cookie
 	ctx.SetCookie(c.cfg.Name, sess.Id(), c.cfg.MaxAge, c.cfg.Path, c.cfg.Domain, c.cfg.Secure, true)

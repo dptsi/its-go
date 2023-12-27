@@ -12,7 +12,7 @@ import (
 
 const DefaultDatabaseName = "default"
 
-type Manager struct {
+type Service struct {
 	databases map[string]*Database
 }
 
@@ -25,13 +25,13 @@ type Config struct {
 	Database string
 }
 
-func NewManager() *Manager {
-	return &Manager{
+func NewService() *Service {
+	return &Service{
 		databases: make(map[string]*Database),
 	}
 }
 
-func (m *Manager) AddDatabase(name string, cfg Config) error {
+func (m *Service) AddDatabase(name string, cfg Config) error {
 	log.Printf("Adding database %s...\n", name)
 	if _, exists := m.databases[name]; exists {
 		return fmt.Errorf("database %s already exists", name)
@@ -48,7 +48,7 @@ func (m *Manager) AddDatabase(name string, cfg Config) error {
 			return fmt.Errorf("SQLite connection error: %w", err)
 		}
 		log.Println("Successfully connected to SQLite database!")
-		m.databases[name] = NewDatabase(db)
+		m.databases[name] = db
 	case "sqlserver":
 		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 		log.Println("Connecting to SQL Server database...")
@@ -57,7 +57,7 @@ func (m *Manager) AddDatabase(name string, cfg Config) error {
 			return fmt.Errorf("SQL Server connection error: %w", err)
 		}
 		log.Println("Successfully connected to SQL Server database!")
-		m.databases[name] = NewDatabase(db)
+		m.databases[name] = db
 	case "postgres":
 		dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 		log.Println("Connecting to PostgreSQL database...")
@@ -66,7 +66,7 @@ func (m *Manager) AddDatabase(name string, cfg Config) error {
 			return fmt.Errorf("PostgreSQL connection error: %w", err)
 		}
 		log.Println("Successfully connected to PostgreSQL database!")
-		m.databases[name] = NewDatabase(db)
+		m.databases[name] = db
 	default:
 		return fmt.Errorf("unknown database driver %s", cfg.Driver)
 	}
@@ -74,10 +74,10 @@ func (m *Manager) AddDatabase(name string, cfg Config) error {
 	return nil
 }
 
-func (m *Manager) GetDatabase(name string) *Database {
+func (m *Service) GetDatabase(name string) *Database {
 	return m.databases[name]
 }
 
-func (m *Manager) GetDefault() *Database {
+func (m *Service) GetDefault() *Database {
 	return m.databases[DefaultDatabaseName]
 }

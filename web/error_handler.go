@@ -5,14 +5,13 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
 	commonErrors "bitbucket.org/dptsi/go-framework/app/errors"
 )
 
-func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
+func globalErrorHandler(isDebugMode bool) HandlerFunc {
+	return func(ctx *Context) {
 		ctx.Next()
 		err := ctx.Errors.Last()
 		if err == nil {
@@ -26,7 +25,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			}
 		}
 
-		data := gin.H{
+		data := H{
 			"request_id": requestId,
 		}
 
@@ -43,7 +42,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusBadRequest,
-				gin.H{
+				H{
 					"code":    statusCode[validationError],
 					"message": validationError,
 					"data":    data,
@@ -56,7 +55,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			}
 			ctx.JSON(
 				http.StatusBadRequest,
-				gin.H{
+				H{
 					"code":    badRequestError.Code(),
 					"message": badRequestError.Message(),
 					"data":    data,
@@ -66,7 +65,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusBadRequest,
-				gin.H{
+				H{
 					"code":    invariantError.Code(),
 					"message": invariantError.Error(),
 					"data":    data,
@@ -76,7 +75,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			log.Printf("Request ID: %s; Status: 404; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusNotFound,
-				gin.H{
+				H{
 					"code":    notFoundError.Code(),
 					"message": notFoundError.Error(),
 					"data":    data,
@@ -86,7 +85,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			log.Printf("Request ID: %s; Status: 409; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusConflict,
-				gin.H{
+				H{
 					"code":    aggregateVersionMismatchError.Code(),
 					"message": aggregateVersionMismatchError.Error(),
 					"data":    data,
@@ -99,7 +98,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			}
 			ctx.JSON(
 				http.StatusForbidden,
-				gin.H{
+				H{
 					"code":    statusCode[forbiddenError],
 					"message": forbiddenErr.Error(),
 					"data":    data,
@@ -109,7 +108,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			log.Printf("Request ID: %s; Status: 401; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusUnauthorized,
-				gin.H{
+				H{
 					"code":    statusCode[unauthorizedError],
 					"message": unauthorizedError,
 					"data":    data,
@@ -122,7 +121,7 @@ func globalErrorHandler(isDebugMode bool) gin.HandlerFunc {
 			}
 			ctx.JSON(
 				http.StatusInternalServerError,
-				gin.H{
+				H{
 					"code":    statusCode[internalServerError],
 					"message": internalServerError,
 					"data":    data,

@@ -5,6 +5,7 @@ import (
 
 	"bitbucket.org/dptsi/go-framework/app/errors"
 	"bitbucket.org/dptsi/go-framework/sessions"
+	"bitbucket.org/dptsi/go-framework/web"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +22,7 @@ func NewVerifyCSRFToken() *VerifyCSRFToken {
 	return &VerifyCSRFToken{}
 }
 
-func (m *VerifyCSRFToken) Execute(ctx *gin.Context) {
+func (m *VerifyCSRFToken) Execute(ctx *web.Context) {
 	sess := sessions.Default(ctx)
 	sessionCSRFToken := sess.CSRFToken()
 	req := ctx.Request

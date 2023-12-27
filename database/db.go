@@ -2,10 +2,6 @@ package database
 
 import "gorm.io/gorm"
 
-type Database struct {
-	*gorm.DB
-}
+type Database = gorm.DB
 
-func NewDatabase(db *gorm.DB) *Database {
-	return &Database{db}
-}
+var ErrRecordNotFound = gorm.ErrRecordNotFound

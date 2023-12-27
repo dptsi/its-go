@@ -6,24 +6,24 @@ import (
 
 	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/sessions"
-	"github.com/gin-gonic/gin"
+	"bitbucket.org/dptsi/go-framework/web"
 )
 
 type StartSession struct {
 	sessionsConfig sessions.SessionsConfig
 	storage        contracts.SessionStorage
-	cookieUtil     sessions.CookieUtil
+	cookieWriter   contracts.SessionCookieWriter
 }
 
-func NewStartSession(sessionsConfig sessions.SessionsConfig, storage contracts.SessionStorage, cookieUtil sessions.CookieUtil) *StartSession {
+func NewStartSession(sessionsConfig sessions.SessionsConfig, storage contracts.SessionStorage, cookieWriter contracts.SessionCookieWriter) *StartSession {
 	return &StartSession{
 		sessionsConfig: sessionsConfig,
 		storage:        storage,
-		cookieUtil:     cookieUtil,
+		cookieWriter:   cookieWriter,
 	}
 }
 
-func (m *StartSession) Execute(ctx *gin.Context) {
+func (m *StartSession) Execute(ctx *web.Context) {
 	if m.storage == nil {
 		err := errors.New("session storage not configured")
 		ctx.Error(fmt.Errorf("start session middleware: %w", err))
@@ -55,6 +55,6 @@ func (m *StartSession) Execute(ctx *gin.Context) {
 		}
 	}
 	ctx.Set("session", data)
-	m.cookieUtil.AddSessionCookieToResponse(ctx, data)
+	m.cookieWriter.Write(ctx, data)
 	ctx.Next()
 }

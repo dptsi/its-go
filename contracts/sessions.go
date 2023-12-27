@@ -3,6 +3,8 @@ package contracts
 import (
 	"context"
 	"time"
+
+	"bitbucket.org/dptsi/go-framework/web"
 )
 
 type SessionData interface {
@@ -23,4 +25,8 @@ type SessionStorage interface {
 	Get(ctx context.Context, id string) (SessionData, error)
 	Save(ctx context.Context, data SessionData) error
 	Delete(ctx context.Context, id string) error
+}
+
+type SessionCookieWriter interface {
+	Write(ctx *web.Context, sess SessionData)
 }

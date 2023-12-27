@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/models"
 	"bitbucket.org/dptsi/go-framework/oidc"
-	"bitbucket.org/dptsi/go-framework/sessions"
 )
 
 type entraIDClaim struct {
@@ -17,7 +17,7 @@ type entraIDClaim struct {
 	Roles             []string `json:"roles"`
 }
 
-func GetUserFromAuthorizationCode(ctx context.Context, oidcClient *oidc.Client, sess *sessions.Data, code string, state string) (*contracts.User, error) {
+func GetUserFromAuthorizationCode(ctx context.Context, oidcClient *oidc.Client, sess contracts.SessionData, code string, state string) (*models.User, error) {
 	_, IDToken, err := oidcClient.ExchangeCodeForToken(ctx, sess, code, state)
 	if err != nil {
 		return nil, fmt.Errorf("get user from entra id failed: %w", err)
@@ -28,7 +28,7 @@ func GetUserFromAuthorizationCode(ctx context.Context, oidcClient *oidc.Client, 
 		return nil, fmt.Errorf("get user from entra id failed: %w", err)
 	}
 
-	user := contracts.NewUser(claims.ObjectId)
+	user := models.NewUser(claims.ObjectId)
 	user.SetName(claims.Name)
 	user.SetPreferredUsername(claims.PreferredUsername)
 	user.SetEmail(claims.Email)
