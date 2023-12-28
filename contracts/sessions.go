@@ -15,7 +15,6 @@ type SessionData interface {
 	Delete(key string)
 	Clear()
 	RegenerateId()
-	Invalidate()
 	RegenerateCSRFToken()
 	Data() map[string]interface{}
 	ExpiredAt() time.Time
@@ -29,4 +28,16 @@ type SessionStorage interface {
 
 type SessionCookieWriter interface {
 	Write(ctx *web.Context, sess SessionData)
+}
+
+type SessionService interface {
+	Get(ctx *web.Context, key string) (interface{}, error)
+	IsTokenMatch(ctx *web.Context, token string) (bool, error)
+	Put(ctx *web.Context, key string, value interface{}) error
+	Delete(ctx *web.Context, key string) error
+	Clear(ctx *web.Context) error
+	Regenerate(ctx *web.Context) error
+	Invalidate(ctx *web.Context) error
+	RegenerateToken(ctx *web.Context) error
+	Start(ctx *web.Context) error
 }

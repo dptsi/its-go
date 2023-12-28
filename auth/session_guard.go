@@ -7,7 +7,6 @@ import (
 
 	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/models"
-	"bitbucket.org/dptsi/go-framework/sessions"
 	"bitbucket.org/dptsi/go-framework/web"
 )
 
@@ -24,14 +23,12 @@ type UserSessionData struct {
 const userContextKey = "auth.user"
 
 type SessionGuard struct {
-	storage      contracts.SessionStorage
-	cookieWriter contracts.SessionCookieWriter
+	service contracts.SessionService
 }
 
-func NewSessionGuard(storage contracts.SessionStorage, cookieWriter contracts.SessionCookieWriter) *SessionGuard {
+func NewSessionGuard(service contracts.SessionService) *SessionGuard {
 	return &SessionGuard{
-		storage:      storage,
-		cookieWriter: cookieWriter,
+		service: service,
 	}
 }
 
@@ -55,18 +52,17 @@ func (g *SessionGuard) User(ctx *web.Context) *models.User {
 		return user
 	}
 
-	sess := sessions.Default(ctx)
-	userIf, ok := sess.Get("user")
-	if !ok {
+	userIf, err := g.service.Get(ctx, "user")
+	if err != nil {
 		return nil
 	}
+
 	userJson, ok := userIf.(string)
 	if !ok {
 		return nil
 	}
 	var userData UserSessionData
-	err := json.Unmarshal([]byte(userJson), &userData)
-	if err != nil {
+	if err := json.Unmarshal([]byte(userJson), &userData); err != nil {
 		return nil
 	}
 
@@ -89,30 +85,22 @@ func (g *SessionGuard) SetUser(ctx *web.Context, user *models.User) {
 }
 
 func (g *SessionGuard) Login(ctx *web.Context, user *models.User) error {
-	sess, err := g.updateSession(ctx, user)
-	if err != nil {
+	if err := g.updateSession(ctx, user); err != nil {
 		return fmt.Errorf("session guard: login: %w", err)
 	}
-
-	g.cookieWriter.Write(ctx, sess)
 
 	return nil
 }
 
 func (g *SessionGuard) Logout(ctx *web.Context) error {
-	sess, err := g.updateSession(ctx, nil)
-	if err != nil {
+	if err := g.updateSession(ctx, nil); err != nil {
 		return fmt.Errorf("session guard: logout: %w", err)
 	}
-
-	g.cookieWriter.Write(ctx, sess)
 
 	return nil
 }
 
-func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) (updated *sessions.Data, err error) {
-	data := sessions.Default(ctx)
-
+func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) error {
 	if user != nil {
 		userSessionData := UserSessionData{
 			Id:                strings.ToLower(user.Id()),
@@ -125,12 +113,10 @@ func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) (updat
 		}
 		userJson, err := json.Marshal(userSessionData)
 		if err != nil {
-			return data, fmt.Errorf("session guard: update session: %w", err)
+			return fmt.Errorf("session guard: update session: %w", err)
 		}
-		data.Set("user", string(userJson))
-	} else {
-		data.Delete("user")
+		return g.service.Put(ctx, "user", string(userJson))
 	}
 
-	return data, g.storage.Save(ctx, data)
+	return g.service.Put(ctx, "user", nil)
 }

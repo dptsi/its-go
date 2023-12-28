@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"bitbucket.org/dptsi/go-framework/app/errors"
-	"bitbucket.org/dptsi/go-framework/sessions"
+	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/web"
 	"github.com/gin-gonic/gin"
 )
@@ -16,15 +16,14 @@ var errInvalidCSRFToken = errors.NewForbidden(errors.ForbiddenParam{
 var methodsWithoutCSRFToken = []string{"GET", "HEAD", "OPTIONS"}
 
 type VerifyCSRFToken struct {
+	sessionService contracts.SessionService
 }
 
-func NewVerifyCSRFToken() *VerifyCSRFToken {
-	return &VerifyCSRFToken{}
+func NewVerifyCSRFToken(sessionService contracts.SessionService) *VerifyCSRFToken {
+	return &VerifyCSRFToken{sessionService}
 }
 
 func (m *VerifyCSRFToken) Execute(ctx *web.Context) {
-	sess := sessions.Default(ctx)
-	sessionCSRFToken := sess.CSRFToken()
 	req := ctx.Request
 	requestCSRFToken := req.Header.Get("X-CSRF-TOKEN")
 
@@ -36,7 +35,20 @@ func (m *VerifyCSRFToken) Execute(ctx *web.Context) {
 		}
 	}
 
-	if sessionCSRFToken == "" || sessionCSRFToken != requestCSRFToken {
+	if requestCSRFToken == "" {
+		ctx.Error(errInvalidCSRFToken)
+		ctx.Abort()
+		return
+	}
+
+	isMatch, err := m.sessionService.IsTokenMatch(ctx, requestCSRFToken)
+	if err != nil {
+		ctx.Error(err)
+		ctx.Abort()
+		return
+	}
+
+	if !isMatch {
 		ctx.Error(errInvalidCSRFToken)
 		ctx.Abort()
 		return
