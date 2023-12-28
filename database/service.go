@@ -16,7 +16,7 @@ type Service struct {
 	databases map[string]*Database
 }
 
-type Config struct {
+type ConnectionConfig struct {
 	Driver   string
 	User     string
 	Password string
@@ -25,14 +25,18 @@ type Config struct {
 	Database string
 }
 
-func NewService(databasesConfig map[string]Config) (*Service, error) {
-	databases := make(map[string]*Database, len(databasesConfig))
-	for name, cfg := range databasesConfig {
+type Config struct {
+	Connections map[string]ConnectionConfig
+}
+
+func NewService(cfg Config) (*Service, error) {
+	databases := make(map[string]*Database, len(cfg.Connections))
+	for name, cfg := range cfg.Connections {
 		log.Printf("Adding database %s...\n", name)
 		if name == "" {
 			name = DefaultDatabaseName
 		}
-		db, err := createDatabase(cfg)
+		db, err := createConnection(cfg)
 		if err != nil {
 			return nil, fmt.Errorf("database service: new service: error creating database with name \"%s\": %w", name, err)
 		}
@@ -44,7 +48,7 @@ func NewService(databasesConfig map[string]Config) (*Service, error) {
 	}, nil
 }
 
-func createDatabase(cfg Config) (*Database, error) {
+func createConnection(cfg ConnectionConfig) (*Database, error) {
 	switch cfg.Driver {
 	case "sqlite":
 		// Contoh penggunaan adapter GORM dengan SQLite

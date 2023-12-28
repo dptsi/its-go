@@ -18,7 +18,7 @@ type Config struct {
 	Environment string
 }
 
-func SetupServer(cfg Config) (*Engine, error) {
+func SetupEngine(cfg Config) (*Engine, error) {
 	if cfg.IsDebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
