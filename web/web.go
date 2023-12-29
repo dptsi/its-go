@@ -18,7 +18,7 @@ type Config struct {
 	Environment string
 }
 
-func SetupEngine(cfg Config) (*Engine, error) {
+func SetupEngine(cfg Config, globalMiddlewares []HandlerFunc) (*Engine, error) {
 	if cfg.IsDebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -41,6 +41,7 @@ func SetupEngine(cfg Config) (*Engine, error) {
 	r.Use(func(ctx *Context) {
 		ctx.Set("request_id", uuid.NewString())
 	})
+
 	r.NoRoute(func(ctx *Context) {
 		ctx.Error(errors.NewNotFound(errors.NotFoundParam{}))
 		ctx.Abort()
@@ -69,7 +70,27 @@ func SetupEngine(cfg Config) (*Engine, error) {
 		})
 	}))
 	r.Use(globalErrorHandler(cfg.IsDebugMode))
+	for _, m := range globalMiddlewares {
+		r.Use(m)
+	}
+
+	r.GET("/csrf-cookie", CSRFCookieRoute)
 
 	log.Println("Gin server successfully set up!")
 	return r, nil
+}
+
+// CSRF cookie godoc
+// @Summary		Rute dummy untuk set CSRF-TOKEN cookie
+// @Router		/csrf-cookie [get]
+// @Tags		CSRF Protection
+// @Produce		json
+// @Success		200 {object} responses.GeneralResponse{code=int,message=string} "Cookie berhasil diset"
+// @Header      default {string} Set-Cookie "CSRF-TOKEN=00000000-0000-0000-0000-000000000000; Path=/"
+func CSRFCookieRoute(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    0,
+		"message": "success",
+		"data":    nil,
+	})
 }

@@ -33,7 +33,8 @@ type Config struct {
 	Connection string
 
 	// Database table
-	Table string
+	Table       string
+	AutoMigrate bool
 
 	Cookie CookieConfig
 }

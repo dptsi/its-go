@@ -49,6 +49,10 @@ func NewService(cfg Config) (*Service, error) {
 }
 
 func createConnection(cfg ConnectionConfig) (*Database, error) {
+	if cfg.Driver == "" {
+		return nil, fmt.Errorf("database driver is empty, supported drivers are [sqlite, sqlserver, postgres]")
+	}
+
 	switch cfg.Driver {
 	case "sqlite":
 		// Contoh penggunaan adapter GORM dengan SQLite
@@ -78,7 +82,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		log.Println("Successfully connected to PostgreSQL database!")
 		return db, nil
 	default:
-		return nil, fmt.Errorf("unknown database driver %s", cfg.Driver)
+		return nil, fmt.Errorf("unknown database driver %s, supported drivers are [sqlite, sqlserver, postgres]", cfg.Driver)
 	}
 
 }

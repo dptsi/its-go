@@ -15,12 +15,14 @@ func NewStartSession(service contracts.SessionService) *StartSession {
 	}
 }
 
-func (m *StartSession) Execute(ctx *web.Context) {
-	if err := m.service.Start(ctx); err != nil {
-		ctx.Error(err)
-		ctx.Abort()
-		return
-	}
+func (m *StartSession) Handle(interface{}) web.HandlerFunc {
+	return func(ctx *web.Context) {
+		if err := m.service.Start(ctx); err != nil {
+			ctx.Error(err)
+			ctx.Abort()
+			return
+		}
 
-	ctx.Next()
+		ctx.Next()
+	}
 }
