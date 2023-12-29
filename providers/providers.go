@@ -38,15 +38,21 @@ func LoadProviders(application *app.Application) error {
 	app.Bind[contracts.SessionCookieWriter](application, "sessions.cookie_writer", func(application *app.Application) (contracts.SessionCookieWriter, error) {
 		return sessions.NewCookieUtil(sessionsConfig.Cookie), nil
 	})
+	app.Bind[contracts.SessionStorage](application, "sessions.storage.db", func(a *app.Application) (contracts.SessionStorage, error) {
+		db := app.MustMake[contracts.DatabaseService](application, "database.service").GetDefault()
+		return storage.NewDatabase(db, sessionsConfig.Table), nil
+	})
 	app.Bind[contracts.SessionService](application, "sessions.service", func(application *app.Application) (contracts.SessionService, error) {
-		db := app.Make[contracts.DatabaseService](application, "database.service").GetDefault()
-		writer := app.Make[contracts.SessionCookieWriter](application, "sessions.cookie_writer")
+		writer := app.MustMake[contracts.SessionCookieWriter](application, "sessions.cookie_writer")
 
-		// TODO: masih janggal
+		storageKey := fmt.Sprintf("sessions.storage.%s", sessionsConfig.Storage)
+		storage, err := app.Make[contracts.SessionStorage](application, storageKey)
+		if err != nil {
+			return nil, fmt.Errorf("session service: storage\"%s\" is not supported: %w", sessionsConfig.Storage, err)
+		}
+
 		service, err := sessions.NewService(
-			map[string]contracts.SessionStorage{
-				"database": storage.NewDatabase(db, sessionsConfig.Table),
-			},
+			storage,
 			writer,
 			sessionsConfig,
 		)
@@ -57,14 +63,13 @@ func LoadProviders(application *app.Application) error {
 
 	log.Println("Registering authentication service...")
 	app.Bind[contracts.AuthGuard](application, "auth.guard.sessions", func(application *app.Application) (contracts.AuthGuard, error) {
-		return auth.NewSessionGuard(app.Make[contracts.SessionService](application, "sessions.service")), nil
+		return auth.NewSessionGuard(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
 	})
 	app.Bind[contracts.AuthService](application, "auth.service", func(application *app.Application) (contracts.AuthService, error) {
-		fmt.Println("anjeng")
 		service := auth.NewService(auth.Config{
 			Guards: map[string]auth.GuardsConfig{
 				"sessions": {
-					Driver: app.Make[contracts.AuthGuard](application, "auth.guard.sessions"),
+					Driver: app.MustMake[contracts.AuthGuard](application, "auth.guard.sessions"),
 				},
 			},
 		})

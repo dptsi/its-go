@@ -22,8 +22,12 @@ func Bind[T any](app *Application, name string, provider Provider[T]) {
 	})
 }
 
-func Make[T any](app *Application, name string) T {
+func MustMake[T any](app *Application, name string) T {
 	return do.MustInvokeNamed[T](app.i, name)
+}
+
+func Make[T any](app *Application, name string) (T, error) {
+	return do.InvokeNamed[T](app.i, name)
 }
 
 func (app *Application) Config() map[string]interface{} {

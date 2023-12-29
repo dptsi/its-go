@@ -44,12 +44,7 @@ type Service struct {
 	cfg     Config
 }
 
-func NewService(storages map[string]contracts.SessionStorage, writer contracts.SessionCookieWriter, cfg Config) (*Service, error) {
-	storage, exists := storages[cfg.Storage]
-	if !exists {
-		return nil, fmt.Errorf("session service: storage\"%s\" is not supported", cfg.Storage)
-	}
-
+func NewService(storage contracts.SessionStorage, writer contracts.SessionCookieWriter, cfg Config) (*Service, error) {
 	return &Service{
 		storage: storage,
 		writer:  writer,
