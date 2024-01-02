@@ -141,7 +141,11 @@ func (s *Service) RegenerateToken(ctx *web.Context) error {
 
 	data.RegenerateCSRFToken()
 
-	return s.updateToContextAndStorage(ctx, data)
+	if err := s.updateToContextAndStorage(ctx, data); err != nil {
+		return err
+	}
+	s.writer.Write(ctx, data)
+	return nil
 }
 
 func (s *Service) updateToContextAndStorage(ctx *web.Context, data *Data) error {
