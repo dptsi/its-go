@@ -7,6 +7,6 @@ type Middleware interface {
 }
 
 type MiddlewareService interface {
-	Get(name string) (Middleware, error)
-	Global() ([]Middleware, error)
+	Use(name string, params interface{}) web.HandlerFunc
+	Global() web.HandlerFunc
 }

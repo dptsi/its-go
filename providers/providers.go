@@ -126,16 +126,8 @@ func LoadProviders(application *app.Application) error {
 		if err != nil {
 			return nil, err
 		}
-		globalMiddlewares, err := middlewareService.Global()
-		if err != nil {
-			return nil, err
-		}
-		handlerFuncs := make([]web.HandlerFunc, len(globalMiddlewares))
-		for i, m := range globalMiddlewares {
-			handlerFuncs[i] = m.Handle(nil)
-		}
 
-		engine, err := web.SetupEngine(webConfig, handlerFuncs)
+		engine, err := web.SetupEngine(webConfig, middlewareService.Global())
 		if err != nil {
 			return nil, err
 		}

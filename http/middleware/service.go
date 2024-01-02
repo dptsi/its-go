@@ -5,6 +5,7 @@ import (
 
 	"bitbucket.org/dptsi/go-framework/app"
 	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/web"
 )
 
 type Config struct {
@@ -23,25 +24,25 @@ func NewService(app *app.Application, cfg Config) *Service {
 	}
 }
 
-func (s *Service) Get(name string) (contracts.Middleware, error) {
-	return app.Make[contracts.Middleware](s.app, fmt.Sprintf("http.middleware.handler.%s", name))
+func (s *Service) Use(name string, params interface{}) web.HandlerFunc {
+	m, err := app.Make[contracts.Middleware](s.app, fmt.Sprintf("http.middleware.handler.%s", name))
+	if err != nil {
+		panic(fmt.Errorf("middleware %s not found", name))
+	}
+	return m.Handle(params)
 }
 
-func (s *Service) Global() ([]contracts.Middleware, error) {
+func (s *Service) Global() web.HandlerFunc {
 	global := s.cfg.Groups["global"]
 
 	return s.group(global)
 }
 
-func (s *Service) group(group []string) ([]contracts.Middleware, error) {
-	middlewares := make([]contracts.Middleware, len(group))
-	for i, name := range group {
-		m, err := app.Make[contracts.Middleware](s.app, fmt.Sprintf("http.middleware.handler.%s", name))
-		if err != nil {
-			return nil, err
+func (s *Service) group(group []string) web.HandlerFunc {
+	return func(ctx *web.Context) {
+		for _, name := range group {
+			m := s.Use(name, nil)
+			m(ctx)
 		}
-		middlewares[i] = m
 	}
-
-	return middlewares, nil
 }

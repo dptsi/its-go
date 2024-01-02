@@ -18,7 +18,7 @@ type Config struct {
 	Environment string
 }
 
-func SetupEngine(cfg Config, globalMiddlewares []HandlerFunc) (*Engine, error) {
+func SetupEngine(cfg Config, globalMiddleware HandlerFunc) (*Engine, error) {
 	if cfg.IsDebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -70,9 +70,7 @@ func SetupEngine(cfg Config, globalMiddlewares []HandlerFunc) (*Engine, error) {
 		})
 	}))
 	r.Use(globalErrorHandler(cfg.IsDebugMode))
-	for _, m := range globalMiddlewares {
-		r.Use(m)
-	}
+	r.Use(globalMiddleware)
 
 	log.Println("Gin server successfully set up!")
 	return r, nil
