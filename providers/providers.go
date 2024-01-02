@@ -11,6 +11,7 @@ import (
 	"bitbucket.org/dptsi/go-framework/event"
 	"bitbucket.org/dptsi/go-framework/http"
 	"bitbucket.org/dptsi/go-framework/http/middleware"
+	"bitbucket.org/dptsi/go-framework/module"
 	"bitbucket.org/dptsi/go-framework/sessions"
 	"bitbucket.org/dptsi/go-framework/sessions/storage"
 	"bitbucket.org/dptsi/go-framework/web"
@@ -91,6 +92,12 @@ func LoadProviders(application *app.Application) error {
 		return middleware.NewService(application, middlewareConfig), nil
 	})
 	log.Println("Middleware service registered!")
+
+	log.Println("Registering module service...")
+	app.Bind[contracts.ModuleService](application, "module.service", func(application *app.Application) (contracts.ModuleService, error) {
+		return module.NewService(application), nil
+	})
+	log.Println("Module service registered!")
 
 	log.Println("Registering sessions service...")
 	app.Bind[contracts.SessionCookieWriter](application, "sessions.cookie_writer", func(application *app.Application) (contracts.SessionCookieWriter, error) {

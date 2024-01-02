@@ -1,14 +1,21 @@
 package app
 
-import "github.com/samber/do"
+import (
+	"context"
+	"fmt"
+
+	"github.com/samber/do"
+)
 
 type Application struct {
+	ctx context.Context
 	i   *do.Injector
 	cfg map[string]interface{}
 }
 
-func NewApplication(i *do.Injector, cfg map[string]interface{}) *Application {
+func NewApplication(ctx context.Context, i *do.Injector, cfg map[string]interface{}) *Application {
 	return &Application{
+		ctx: ctx,
 		i:   i,
 		cfg: cfg,
 	}
@@ -23,11 +30,19 @@ func Bind[T any](app *Application, name string, provider Provider[T]) {
 }
 
 func MustMake[T any](app *Application, name string) T {
-	return do.MustInvokeNamed[T](app.i, name)
+	instance, err := do.InvokeNamed[T](app.i, name)
+	if err != nil {
+		panic(fmt.Errorf("error when creating object %s: %w", name, err))
+	}
+	return instance
 }
 
 func Make[T any](app *Application, name string) (T, error) {
 	return do.InvokeNamed[T](app.i, name)
+}
+
+func (app *Application) Context() context.Context {
+	return app.ctx
 }
 
 func (app *Application) Config() map[string]interface{} {
