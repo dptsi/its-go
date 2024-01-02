@@ -41,16 +41,10 @@ func LoadProviders(application *app.Application) error {
 	}
 
 	log.Println("Registering authentication service...")
-	app.Bind[contracts.AuthGuard](application, "auth.guard.sessions", func(application *app.Application) (contracts.AuthGuard, error) {
-		return auth.NewSessionGuard(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
-	})
 	app.Bind[contracts.AuthService](application, "auth.service", func(application *app.Application) (contracts.AuthService, error) {
-		service := auth.NewService(auth.Config{
-			Guards: map[string]auth.GuardsConfig{
-				"sessions": {
-					Driver: app.MustMake[contracts.AuthGuard](application, "auth.guard.sessions"),
-				},
-			},
+		service := auth.NewService(application)
+		service.RegisterGuard("sessions", func(application *app.Application) (contracts.AuthGuard, error) {
+			return auth.NewSessionGuard(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
 		})
 
 		return service, nil

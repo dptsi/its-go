@@ -3,35 +3,30 @@ package auth
 import (
 	"fmt"
 
+	"bitbucket.org/dptsi/go-framework/app"
 	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/models"
 	"bitbucket.org/dptsi/go-framework/web"
 )
 
-const defaultGuard = "web"
+const defaultGuard = "sessions"
 const guardContextKey = "auth.guard"
 const errorPrefix = "auth service"
 
-type GuardsConfig struct {
-	Driver contracts.AuthGuard
-}
-
-type Config struct {
-	Guards map[string]GuardsConfig
-}
-
 type Service struct {
-	cfg Config
+	application *app.Application
+	guards      map[string]bool
 }
 
-func NewService(cfg Config) *Service {
+func NewService(application *app.Application) *Service {
 	return &Service{
-		cfg: cfg,
+		application: application,
+		guards:      make(map[string]bool),
 	}
 }
 
-func (a *Service) Login(ctx *web.Context, user *models.User) error {
-	key, guard, err := a.getGuard(ctx)
+func (s *Service) Login(ctx *web.Context, user *models.User) error {
+	key, guard, err := s.getGuard(ctx)
 	if err != nil {
 		return fmt.Errorf("%s: login: %w", errorPrefix, err)
 	}
@@ -44,9 +39,9 @@ func (a *Service) Login(ctx *web.Context, user *models.User) error {
 	return statefulGuard.Login(ctx, user)
 }
 
-func (a *Service) Logout(ctx *web.Context) error {
+func (s *Service) Logout(ctx *web.Context) error {
 	errorPrefix := fmt.Sprintf("%s: logout", errorPrefix)
-	key, guard, err := a.getGuard(ctx)
+	key, guard, err := s.getGuard(ctx)
 	if err != nil {
 		return fmt.Errorf("%s: %w", errorPrefix, err)
 	}
@@ -59,9 +54,9 @@ func (a *Service) Logout(ctx *web.Context) error {
 	return statefulGuard.Logout(ctx)
 }
 
-func (a *Service) User(ctx *web.Context) (*models.User, error) {
+func (s *Service) User(ctx *web.Context) (*models.User, error) {
 	errorPrefix := fmt.Sprintf("%s: user", errorPrefix)
-	_, guard, err := a.getGuard(ctx)
+	_, guard, err := s.getGuard(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", errorPrefix, err)
 	}
@@ -69,15 +64,33 @@ func (a *Service) User(ctx *web.Context) (*models.User, error) {
 	return guard.User(ctx), nil
 }
 
-func (a *Service) getGuard(ctx *web.Context) (key string, guard contracts.AuthGuard, err error) {
+func (s *Service) getGuard(ctx *web.Context) (key string, guard contracts.AuthGuard, err error) {
 	key = ctx.GetString(guardContextKey)
 	if key == "" {
 		key = defaultGuard
 	}
-	cfg, exists := a.cfg.Guards[key]
-	if !exists {
+	guard, err = app.Make[contracts.AuthGuard](s.application, s.getGuardKey(key))
+	if err != nil {
 		return key, nil, fmt.Errorf("auth guard \"%s\" not found", key)
 	}
 
-	return key, cfg.Driver, nil
+	return key, guard, nil
+}
+
+func (s *Service) RegisterGuard(name string, constructor contracts.AuthGuardConstructor) error {
+	if _, exists := s.guards[name]; exists {
+		return fmt.Errorf("auth service: register guard: guard \"%s\" already exist", name)
+	}
+	s.guards[name] = true
+
+	app.Bind[contracts.AuthGuard](
+		s.application,
+		s.getGuardKey(name),
+		constructor,
+	)
+	return nil
+}
+
+func (s *Service) getGuardKey(name string) string {
+	return fmt.Sprintf("auth.guard.%s", name)
 }
