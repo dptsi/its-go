@@ -8,9 +8,9 @@ import (
 	"io"
 	"net/http"
 
-	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/models"
 	"bitbucket.org/dptsi/go-framework/oidc"
+	"bitbucket.org/dptsi/go-framework/web"
 	"golang.org/x/oauth2"
 )
 
@@ -49,8 +49,8 @@ type userInfoRaw struct {
 	Resource          interface{}  `json:"resource"`
 }
 
-func GetUserFromAuthorizationCode(ctx context.Context, oidcClient *oidc.Client, sess contracts.SessionData, code string, state string) (*models.User, error) {
-	token, _, err := oidcClient.ExchangeCodeForToken(ctx, sess, code, state)
+func GetUserFromAuthorizationCode(ctx *web.Context, oidcClient *oidc.Client, code string, state string) (*models.User, error) {
+	token, _, err := oidcClient.ExchangeCodeForToken(ctx, code, state)
 	if err != nil {
 		return nil, fmt.Errorf("get user from myits sso failed: %w", err)
 	}

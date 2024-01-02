@@ -1,12 +1,11 @@
 package entra
 
 import (
-	"context"
 	"fmt"
 
-	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/models"
 	"bitbucket.org/dptsi/go-framework/oidc"
+	"bitbucket.org/dptsi/go-framework/web"
 )
 
 type entraIDClaim struct {
@@ -17,8 +16,8 @@ type entraIDClaim struct {
 	Roles             []string `json:"roles"`
 }
 
-func GetUserFromAuthorizationCode(ctx context.Context, oidcClient *oidc.Client, sess contracts.SessionData, code string, state string) (*models.User, error) {
-	_, IDToken, err := oidcClient.ExchangeCodeForToken(ctx, sess, code, state)
+func GetUserFromAuthorizationCode(ctx *web.Context, oidcClient *oidc.Client, code string, state string) (*models.User, error) {
+	_, IDToken, err := oidcClient.ExchangeCodeForToken(ctx, code, state)
 	if err != nil {
 		return nil, fmt.Errorf("get user from entra id failed: %w", err)
 	}
