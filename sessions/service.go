@@ -183,10 +183,10 @@ func (s *Service) Start(ctx *web.Context) error {
 		if err := s.storage.Save(ctx, data); err != nil {
 			return err
 		}
+		s.writer.Write(ctx, data)
 	}
 
 	ctx.Set(sessionDataContextKey, data)
-	s.writer.Write(ctx, data)
 	return nil
 }
 

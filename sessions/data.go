@@ -65,7 +65,7 @@ func (d *Data) ExpiredAt() time.Time {
 }
 
 func NewEmptyData(maxAge int64) *Data {
-	expiredAt := time.Now().Add(time.Second * time.Duration(maxAge))
+	expiredAt := time.Now().Add(time.Minute * time.Duration(maxAge))
 
 	return &Data{
 		id:        uuid.NewString(),
