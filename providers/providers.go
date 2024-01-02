@@ -83,7 +83,9 @@ func LoadProviders(application contracts.Application) error {
 		return middleware.NewVerifyCSRFToken(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
 	})
 	app.Bind[contracts.MiddlewareService](application, "http.middleware.service", func(a contracts.Application) (contracts.MiddlewareService, error) {
-		return middleware.NewService(application, middlewareConfig), nil
+		service := middleware.NewService(application, middlewareConfig)
+
+		return service, nil
 	})
 	log.Println("Middleware service registered!")
 
@@ -127,9 +129,13 @@ func LoadProviders(application contracts.Application) error {
 			return nil, err
 		}
 
-		engine, err := web.SetupEngine(webConfig, middlewareService.Global())
+		engine, err := web.SetupEngine(webConfig)
 		if err != nil {
 			return nil, err
+		}
+		middlewares := middlewareService.Global()
+		for _, m := range middlewares {
+			engine.Use(m)
 		}
 		return engine, nil
 	})

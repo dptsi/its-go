@@ -32,17 +32,16 @@ func (s *Service) Use(name string, params interface{}) web.HandlerFunc {
 	return m.Handle(params)
 }
 
-func (s *Service) Global() web.HandlerFunc {
+func (s *Service) Global() []web.HandlerFunc {
 	global := s.cfg.Groups["global"]
 
 	return s.group(global)
 }
 
-func (s *Service) group(group []string) web.HandlerFunc {
-	return func(ctx *web.Context) {
-		for _, name := range group {
-			m := s.Use(name, nil)
-			m(ctx)
-		}
+func (s *Service) group(group []string) []web.HandlerFunc {
+	middlewares := make([]web.HandlerFunc, len(group))
+	for i, name := range group {
+		middlewares[i] = s.Use(name, nil)
 	}
+	return middlewares
 }

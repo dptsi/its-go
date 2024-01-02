@@ -8,5 +8,5 @@ type Middleware interface {
 
 type MiddlewareService interface {
 	Use(name string, params interface{}) web.HandlerFunc
-	Global() web.HandlerFunc
+	Global() []web.HandlerFunc
 }
