@@ -33,7 +33,7 @@ func NewDatabase(db *database.Database, table string, autoMigrate bool) *Databas
 
 func (g *Database) Get(ctx context.Context, id string) (contracts.SessionData, error) {
 	var data DatabaseData
-	if err := g.db.Table(g.table).First(&data, "id = ?", id).Error; err != nil {
+	if err := g.db.Table(g.table).Where("id = ?", id).First(&data).Error; err != nil {
 		if err == database.ErrRecordNotFound {
 			return nil, nil
 		}
