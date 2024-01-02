@@ -8,6 +8,7 @@ import (
 	"bitbucket.org/dptsi/go-framework/auth"
 	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/database"
+	"bitbucket.org/dptsi/go-framework/event"
 	"bitbucket.org/dptsi/go-framework/http"
 	"bitbucket.org/dptsi/go-framework/http/middleware"
 	"bitbucket.org/dptsi/go-framework/sessions"
@@ -54,6 +55,12 @@ func LoadProviders(application *app.Application) error {
 		return service, nil
 	})
 	log.Println("Authentication service registered!")
+
+	log.Println("Registering event service...")
+	app.Bind[contracts.EventService](application, "event.service", func(application *app.Application) (contracts.EventService, error) {
+		return event.NewService(application), nil
+	})
+	log.Println("Event service registered!")
 
 	log.Println("Registering database service...")
 	app.Bind[contracts.DatabaseService](application, "database.service", func(application *app.Application) (contracts.DatabaseService, error) {
