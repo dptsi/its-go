@@ -16,14 +16,14 @@ const (
 
 type Module struct {
 	name string
-	*app.Application
+	contracts.Application
 }
 
 type Provider[T any] func(mod contracts.Module) (T, error)
 
 func Bind[T any](mod contracts.Module, name string, provider Provider[T]) {
 	key := getServiceKey(mod.Name(), name)
-	app.Bind[T](mod.App(), key, func(a *app.Application) (T, error) {
+	app.Bind[T](mod.App(), key, func(a contracts.Application) (T, error) {
 		return provider(mod)
 	})
 }
@@ -48,7 +48,7 @@ func (m *Module) Name() string {
 	return m.name
 }
 
-func (m *Module) App() *app.Application {
+func (m *Module) App() contracts.Application {
 	return m.Application
 }
 

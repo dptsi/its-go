@@ -10,11 +10,11 @@ import (
 )
 
 type Service struct {
-	application    *app.Application
+	application    contracts.Application
 	listenersCount map[string]int
 }
 
-func NewService(application *app.Application) *Service {
+func NewService(application contracts.Application) *Service {
 	return &Service{
 		application:    application,
 		listenersCount: make(map[string]int),

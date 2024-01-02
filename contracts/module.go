@@ -1,10 +1,8 @@
 package contracts
 
-import "bitbucket.org/dptsi/go-framework/app"
-
 type Module interface {
 	Name() string
-	App() *app.Application
+	App() Application
 }
 
 type ModuleEntrypoint = func(mod Module)

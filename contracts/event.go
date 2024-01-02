@@ -3,8 +3,6 @@ package contracts
 import (
 	"context"
 	"time"
-
-	"bitbucket.org/dptsi/go-framework/app"
 )
 
 // The minimal interface DomainEvent, implemented by all events, ensures support of an occurredOn() accessor.
@@ -22,7 +20,7 @@ type EventListener interface {
 	Handle(ctx context.Context, event Event) error
 }
 
-type EventListenerConstructor = func(application *app.Application) (EventListener, error)
+type EventListenerConstructor = func(application Application) (EventListener, error)
 
 type EventService interface {
 	Dispatch(ctx context.Context, name string, payload Event)

@@ -3,16 +3,15 @@ package module
 import (
 	"log"
 
-	"bitbucket.org/dptsi/go-framework/app"
 	"bitbucket.org/dptsi/go-framework/contracts"
 )
 
 type Service struct {
-	application *app.Application
+	application contracts.Application
 	modules     map[string]bool
 }
 
-func NewService(application *app.Application) *Service {
+func NewService(application contracts.Application) *Service {
 	return &Service{application, make(map[string]bool)}
 }
 

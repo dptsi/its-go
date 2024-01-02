@@ -14,11 +14,11 @@ const guardContextKey = "auth.guard"
 const errorPrefix = "auth service"
 
 type Service struct {
-	application *app.Application
+	application contracts.Application
 	guards      map[string]bool
 }
 
-func NewService(application *app.Application) *Service {
+func NewService(application contracts.Application) *Service {
 	return &Service{
 		application: application,
 		guards:      make(map[string]bool),

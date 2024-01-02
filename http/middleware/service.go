@@ -13,11 +13,11 @@ type Config struct {
 }
 
 type Service struct {
-	app *app.Application
+	app contracts.Application
 	cfg Config
 }
 
-func NewService(app *app.Application, cfg Config) *Service {
+func NewService(app contracts.Application, cfg Config) *Service {
 	return &Service{
 		app: app,
 		cfg: cfg,

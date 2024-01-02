@@ -1,7 +1,6 @@
 package contracts
 
 import (
-	"bitbucket.org/dptsi/go-framework/app"
 	"bitbucket.org/dptsi/go-framework/models"
 	"bitbucket.org/dptsi/go-framework/web"
 )
@@ -18,7 +17,7 @@ type AuthGuard interface {
 	SetUser(ctx *web.Context, user *models.User)
 }
 
-type AuthGuardConstructor = func(application *app.Application) (AuthGuard, error)
+type AuthGuardConstructor = func(application Application) (AuthGuard, error)
 
 type StatefulAuthGuard interface {
 	AuthGuard
