@@ -1,12 +1,14 @@
 package providers
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 
 	"bitbucket.org/dptsi/its-go/app"
 	"bitbucket.org/dptsi/its-go/auth"
 	"bitbucket.org/dptsi/its-go/contracts"
+	"bitbucket.org/dptsi/its-go/crypt"
 	"bitbucket.org/dptsi/its-go/database"
 	"bitbucket.org/dptsi/its-go/event"
 	"bitbucket.org/dptsi/its-go/http/middleware"
@@ -18,6 +20,10 @@ import (
 
 func LoadProviders(application contracts.Application) error {
 	config := application.Config()
+	cryptConfig, ok := config["crypt"].(crypt.Config)
+	if !ok {
+		return fmt.Errorf("crypt config is not available")
+	}
 	dbConfig, ok := config["database"].(database.Config)
 	if !ok {
 		return fmt.Errorf("database config is not available")
@@ -52,6 +58,17 @@ func LoadProviders(application contracts.Application) error {
 		return database.NewService(dbConfig)
 	})
 	log.Println("Database service registered!")
+
+	log.Println("Registering encryption service...")
+	app.Bind[contracts.CryptService](application, "crypt.service", func(application contracts.Application) (contracts.CryptService, error) {
+		key, err := base64.StdEncoding.DecodeString(cryptConfig.Key)
+		if err != nil {
+			return nil, err
+		}
+
+		return crypt.NewAesGcmEncryptionService(key)
+	})
+	log.Println("Encryption service registered!")
 
 	log.Println("Registering middleware service...")
 	app.Bind[contracts.MiddlewareService](application, "http.middleware.service", func(a contracts.Application) (contracts.MiddlewareService, error) {

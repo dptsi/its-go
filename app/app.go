@@ -62,6 +62,7 @@ func (app *Application) Injector() *do.Injector {
 func (app *Application) Services() contracts.ApplicationServices {
 	return contracts.ApplicationServices{
 		Auth:       MustMake[contracts.AuthService](app, "auth.service"),
+		Crypt:      MustMake[contracts.CryptService](app, "crypt.service"),
 		Database:   MustMake[contracts.DatabaseService](app, "database.service"),
 		Event:      MustMake[contracts.EventService](app, "event.service"),
 		Middleware: MustMake[contracts.MiddlewareService](app, "http.middleware.service"),

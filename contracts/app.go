@@ -9,6 +9,7 @@ import (
 
 type ApplicationServices struct {
 	Auth       AuthService
+	Crypt      CryptService
 	Database   DatabaseService
 	Event      EventService
 	Middleware MiddlewareService
