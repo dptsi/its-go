@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.0](https://bitbucket.org/dptsi/its-go/compare/v1.0.0...v1.1.0) (2024-01-03)
+
+
+### Features
+
+* customizable port ([ba8348e](https://bitbucket.org/dptsi/its-go/commit/ba8348e0e8d9d8c1393c6ba65f0e192f36362682))
+
 ## 1.0.0 (2024-01-03)
 
 
