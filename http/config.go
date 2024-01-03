@@ -8,3 +8,8 @@ type CorsConfig struct {
 	AllowCredentials bool
 	MaxAge           int
 }
+
+type CSRFConfig struct {
+	Methods []string
+	Except  []string
+}

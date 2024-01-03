@@ -15,6 +15,10 @@ func registerMiddlewares(application contracts.Application) error {
 	if !ok {
 		return fmt.Errorf("cors config is not available")
 	}
+	csrfConfig, ok := config["csrf"].(http.CSRFConfig)
+	if !ok {
+		return fmt.Errorf("csrf config is not available")
+	}
 	service := application.Services().Middleware
 
 	service.Register("active_role_has_permission", func(application contracts.Application) (contracts.Middleware, error) {
@@ -33,7 +37,10 @@ func registerMiddlewares(application contracts.Application) error {
 		return middleware.NewStartSession(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
 	})
 	service.Register("verify_csrf_token", func(application contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewVerifyCSRFToken(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
+		return middleware.NewVerifyCSRFToken(
+			csrfConfig,
+			app.MustMake[contracts.SessionService](application, "sessions.service"),
+		)
 	})
 
 	return nil
