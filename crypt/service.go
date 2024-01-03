@@ -5,6 +5,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"fmt"
+
+	"bitbucket.org/dptsi/its-go/contracts"
 )
 
 type Config struct {
@@ -52,6 +54,9 @@ func (e *AesGcmEncryptionService) Encrypt(plainText []byte) ([]byte, error) {
 
 func (e *AesGcmEncryptionService) Decrypt(cipherText []byte) ([]byte, error) {
 	nonceSize := e.gcm.NonceSize()
+	if len(cipherText) < 12 {
+		return nil, fmt.Errorf("AesGcmEncryptionService: Decrypt: %w: cipherText too short", contracts.ErrInvalidCipherText)
+	}
 	nonce, cipherText := cipherText[:nonceSize], cipherText[nonceSize:]
 
 	plainText, err := e.gcm.Open(nil, nonce, cipherText, nil)
