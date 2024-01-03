@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"bitbucket.org/dptsi/go-framework/contracts"
-	"bitbucket.org/dptsi/go-framework/web"
+	"bitbucket.org/dptsi/its-go/contracts"
+	"bitbucket.org/dptsi/its-go/web"
 )
 
 type CookieUtil struct {

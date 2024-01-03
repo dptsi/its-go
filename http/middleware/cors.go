@@ -3,8 +3,8 @@ package middleware
 import (
 	"time"
 
-	"bitbucket.org/dptsi/go-framework/http"
-	"bitbucket.org/dptsi/go-framework/web"
+	"bitbucket.org/dptsi/its-go/http"
+	"bitbucket.org/dptsi/its-go/web"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )

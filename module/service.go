@@ -3,7 +3,7 @@ package module
 import (
 	"log"
 
-	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/its-go/contracts"
 )
 
 type Service struct {

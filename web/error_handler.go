@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
-	commonErrors "bitbucket.org/dptsi/go-framework/app/errors"
+	commonErrors "bitbucket.org/dptsi/its-go/app/errors"
 )
 
 func globalErrorHandler(isDebugMode bool) HandlerFunc {

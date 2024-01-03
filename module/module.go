@@ -3,8 +3,8 @@ package module
 import (
 	"fmt"
 
-	"bitbucket.org/dptsi/go-framework/app"
-	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/its-go/app"
+	"bitbucket.org/dptsi/its-go/contracts"
 )
 
 type DependencyScope = string

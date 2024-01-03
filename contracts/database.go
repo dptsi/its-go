@@ -1,6 +1,6 @@
 package contracts
 
-import "bitbucket.org/dptsi/go-framework/database"
+import "bitbucket.org/dptsi/its-go/database"
 
 type DatabaseService interface {
 	GetDatabase(name string) *database.Database

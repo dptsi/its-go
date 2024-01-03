@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"bitbucket.org/dptsi/go-framework/app"
-	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/its-go/app"
+	"bitbucket.org/dptsi/its-go/contracts"
 )
 
 type Service struct {
