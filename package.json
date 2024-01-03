@@ -1,0 +1,11 @@
+{
+  "name": "its-go",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "release": "commit-and-tag-version"
+  },
+  "dependencies": {
+    "commit-and-tag-version": "^12.0.0"
+  }
+}
