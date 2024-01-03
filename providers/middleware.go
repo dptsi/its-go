@@ -1,0 +1,40 @@
+package providers
+
+import (
+	"fmt"
+
+	"bitbucket.org/dptsi/go-framework/app"
+	"bitbucket.org/dptsi/go-framework/contracts"
+	"bitbucket.org/dptsi/go-framework/http"
+	"bitbucket.org/dptsi/go-framework/http/middleware"
+)
+
+func registerMiddlewares(application contracts.Application) error {
+	config := application.Config()
+	corsConfig, ok := config["cors"].(http.CorsConfig)
+	if !ok {
+		return fmt.Errorf("cors config is not available")
+	}
+	service := application.Services().Middleware
+
+	service.Register("active_role_has_permission", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewActiveRoleHasPermission(app.MustMake[contracts.AuthService](application, "auth.service")), nil
+	})
+	service.Register("active_role_in", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewActiveRoleIn(app.MustMake[contracts.AuthService](application, "auth.service")), nil
+	})
+	service.Register("auth", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewAuth(app.MustMake[contracts.AuthService](application, "auth.service")), nil
+	})
+	service.Register("cors", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewCors(corsConfig), nil
+	})
+	service.Register("start_session", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewStartSession(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
+	})
+	service.Register("verify_csrf_token", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewVerifyCSRFToken(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
+	})
+
+	return nil
+}
