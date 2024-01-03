@@ -16,6 +16,7 @@ import (
 type Config struct {
 	IsDebugMode bool
 	Environment string
+	Port        string
 }
 
 func SetupEngine(cfg Config) (*Engine, error) {
