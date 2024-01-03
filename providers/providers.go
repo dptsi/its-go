@@ -9,7 +9,6 @@ import (
 	"bitbucket.org/dptsi/go-framework/contracts"
 	"bitbucket.org/dptsi/go-framework/database"
 	"bitbucket.org/dptsi/go-framework/event"
-	"bitbucket.org/dptsi/go-framework/http"
 	"bitbucket.org/dptsi/go-framework/http/middleware"
 	"bitbucket.org/dptsi/go-framework/module"
 	"bitbucket.org/dptsi/go-framework/sessions"
@@ -19,10 +18,6 @@ import (
 
 func LoadProviders(application contracts.Application) error {
 	config := application.Config()
-	corsConfig, ok := config["cors"].(http.CorsConfig)
-	if !ok {
-		return fmt.Errorf("cors config is not available")
-	}
 	dbConfig, ok := config["database"].(database.Config)
 	if !ok {
 		return fmt.Errorf("database config is not available")
@@ -42,12 +37,7 @@ func LoadProviders(application contracts.Application) error {
 
 	log.Println("Registering authentication service...")
 	app.Bind[contracts.AuthService](application, "auth.service", func(application contracts.Application) (contracts.AuthService, error) {
-		service := auth.NewService(application)
-		service.RegisterGuard("sessions", func(application contracts.Application) (contracts.AuthGuard, error) {
-			return auth.NewSessionGuard(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
-		})
-
-		return service, nil
+		return auth.NewService(application), nil
 	})
 	log.Println("Authentication service registered!")
 
@@ -64,28 +54,8 @@ func LoadProviders(application contracts.Application) error {
 	log.Println("Database service registered!")
 
 	log.Println("Registering middleware service...")
-	app.Bind[contracts.Middleware](application, "http.middleware.handler.active_role_has_permission", func(a contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewActiveRoleHasPermission(app.MustMake[contracts.AuthService](application, "auth.service")), nil
-	})
-	app.Bind[contracts.Middleware](application, "http.middleware.handler.active_role_in", func(a contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewActiveRoleIn(app.MustMake[contracts.AuthService](application, "auth.service")), nil
-	})
-	app.Bind[contracts.Middleware](application, "http.middleware.handler.auth", func(a contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewAuth(app.MustMake[contracts.AuthService](application, "auth.service")), nil
-	})
-	app.Bind[contracts.Middleware](application, "http.middleware.handler.cors", func(a contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewCors(corsConfig), nil
-	})
-	app.Bind[contracts.Middleware](application, "http.middleware.handler.start_session", func(a contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewStartSession(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
-	})
-	app.Bind[contracts.Middleware](application, "http.middleware.handler.verify_csrf_token", func(a contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewVerifyCSRFToken(app.MustMake[contracts.SessionService](application, "sessions.service")), nil
-	})
 	app.Bind[contracts.MiddlewareService](application, "http.middleware.service", func(a contracts.Application) (contracts.MiddlewareService, error) {
-		service := middleware.NewService(application, middlewareConfig)
-
-		return service, nil
+		return middleware.NewService(application, middlewareConfig), nil
 	})
 	log.Println("Middleware service registered!")
 
@@ -124,22 +94,29 @@ func LoadProviders(application contracts.Application) error {
 
 	log.Println("Registering web server...")
 	app.Bind[*web.Engine](application, "web.engine", func(a contracts.Application) (*web.Engine, error) {
-		middlewareService, err := app.Make[contracts.MiddlewareService](a, "http.middleware.service")
-		if err != nil {
-			return nil, err
-		}
-
 		engine, err := web.SetupEngine(webConfig)
 		if err != nil {
 			return nil, err
 		}
-		middlewares := middlewareService.Global()
-		for _, m := range middlewares {
-			engine.Use(m)
-		}
+
 		return engine, nil
 	})
 	log.Println("Web server registered!")
 
+	if err := registerAuthGuard(application); err != nil {
+		return err
+	}
+	if err := registerMiddlewares(application); err != nil {
+		return err
+	}
+	middlewareService, err := app.Make[contracts.MiddlewareService](application, "http.middleware.service")
+	if err != nil {
+		return err
+	}
+	middlewares := middlewareService.Global()
+	engine := app.MustMake[*web.Engine](application, "web.engine")
+	for _, m := range middlewares {
+		engine.Use(m)
+	}
 	return nil
 }
