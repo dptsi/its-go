@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.0](https://bitbucket.org/dptsi/its-go/compare/v1.1.0...v1.2.0) (2024-01-03)
+
+
+### Features
+
+* **crypt:** encrypt/decrypt service ([340038c](https://bitbucket.org/dptsi/its-go/commit/340038c0389585cdea52d2c5c3dcd32e7542fea7))
+* customizable csrf config ([01e4bc1](https://bitbucket.org/dptsi/its-go/commit/01e4bc16ab0a3961716c7b65010d498ff27da236))
+* **script:** base service ([b74a520](https://bitbucket.org/dptsi/its-go/commit/b74a5208357974d9b28a83622ec276118e3b6c34))
+* **script:** generate app key ([5666da1](https://bitbucket.org/dptsi/its-go/commit/5666da1b5e25472c1c08c6e3f8fb664c97bc75aa))
+
 ## [1.1.0](https://bitbucket.org/dptsi/its-go/compare/v1.0.0...v1.1.0) (2024-01-03)
 
 
