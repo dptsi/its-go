@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.0](https://bitbucket.org/dptsi/its-go/compare/v1.3.0...v1.4.0) (2024-01-04)
+
+
+### Features
+
+* remove module specific bind function ([4117249](https://bitbucket.org/dptsi/its-go/commit/4117249bbb44bdcb51a58edd955feeacc2768826))
+* **script:** extend auth, events, and middleware boilerplate ([502897e](https://bitbucket.org/dptsi/its-go/commit/502897e78dc0b3774ff6ec39ce3fae11d58448f6))
+
+
+### Bug Fixes
+
+* wrong method in route template ([d815093](https://bitbucket.org/dptsi/its-go/commit/d81509323857b3d09e7504b9b5bad41f6c9d479a))
+
 ## [1.3.0](https://bitbucket.org/dptsi/its-go/compare/v1.2.0...v1.3.0) (2024-01-04)
 
 
