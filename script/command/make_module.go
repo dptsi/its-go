@@ -75,6 +75,18 @@ func (c *MakeModule) Handler(args []string) error {
 		return fmt.Errorf("error when creating routes.go: %w", err)
 	}
 
+	if err := c.createModuleAuthFile(cfg); err != nil {
+		return fmt.Errorf("error when creating auth.go: %w", err)
+	}
+
+	if err := c.createModuleEventsFile(cfg); err != nil {
+		return fmt.Errorf("error when creating events.go: %w", err)
+	}
+
+	if err := c.createModuleMiddlewaresFile(cfg); err != nil {
+		return fmt.Errorf("error when creating middlewares.go: %w", err)
+	}
+
 	if err := c.createModuleDirectories(cfg); err != nil {
 		return fmt.Errorf("error when creating module directories: %w", err)
 	}
@@ -159,6 +171,78 @@ func (c *MakeModule) createModuleRoutesFile(cfg moduleConfig) error {
 	}
 
 	return routes.Sync()
+}
+
+func (c *MakeModule) createModuleAuthFile(cfg moduleConfig) error {
+	path := cfg.joinPath("internal/app/providers")
+
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		return err
+	}
+
+	path = filepath.Join(path, "auth.go")
+	auth, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer auth.Close()
+	template, err := template.New("module_auth").Parse(templates.ModuleAuth)
+	if err != nil {
+		return err
+	}
+	if err := template.Execute(auth, cfg); err != nil {
+		return err
+	}
+
+	return auth.Sync()
+}
+
+func (c *MakeModule) createModuleEventsFile(cfg moduleConfig) error {
+	path := cfg.joinPath("internal/app/providers")
+
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		return err
+	}
+
+	path = filepath.Join(path, "events.go")
+	events, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer events.Close()
+	template, err := template.New("module_events").Parse(templates.ModuleEvent)
+	if err != nil {
+		return err
+	}
+	if err := template.Execute(events, cfg); err != nil {
+		return err
+	}
+
+	return events.Sync()
+}
+
+func (c *MakeModule) createModuleMiddlewaresFile(cfg moduleConfig) error {
+	path := cfg.joinPath("internal/app/providers")
+
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		return err
+	}
+
+	path = filepath.Join(path, "middlewares.go")
+	middlewares, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer middlewares.Close()
+	template, err := template.New("module_middlewares").Parse(templates.ModuleMiddleware)
+	if err != nil {
+		return err
+	}
+	if err := template.Execute(middlewares, cfg); err != nil {
+		return err
+	}
+
+	return middlewares.Sync()
 }
 
 func (c *MakeModule) createModuleDirectories(cfg moduleConfig) error {

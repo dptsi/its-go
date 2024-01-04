@@ -9,6 +9,9 @@ import (
 )
 
 func SetupModule(mod contracts.Module) {
+	providers.ExtendAuth(mod)
+	providers.RegisterEvents(mod)
+	providers.RegisterMiddlewares(mod)
 	providers.RegisterDependencies(mod)
 	routes.RegisterRoutes(mod)
 }
@@ -57,5 +60,59 @@ func RegisterRoutes(mod contracts.Module) {
 			"data":    nil,
 		})
 	})
+}
+`
+
+const ModuleAuth = `package providers
+
+import (
+	"bitbucket.org/dptsi/its-go/contracts"
+)
+
+func ExtendAuth(mod contracts.Module) {
+	// service := mod.App().Services().Auth
+	// service.RegisterGuard("example", func(application contracts.Application) (contracts.AuthGuard, error) {
+	// 	return nil, nil
+	// })
+}
+`
+
+const ModuleEvent = `package providers
+
+import (
+	"bitbucket.org/dptsi/its-go/contracts"
+)
+
+type Listener struct {
+	eventName            string
+	listenersConstructor []func(application contracts.Application) (contracts.EventListener, error)
+}
+
+var listen []Listener = []Listener{}
+
+func RegisterEvents(mod contracts.Module) {
+	service := mod.App().Services().Event
+	for _, l := range listen {
+		service.Register(l.eventName, l.listenersConstructor)
+	}
+}
+`
+
+const ModuleMiddleware = `package providers
+
+import "bitbucket.org/dptsi/its-go/contracts"
+
+type Middleware struct {
+	name        string
+	constructor contracts.MiddlewareConstructor
+}
+
+var middlewares []Middleware = []Middleware{}
+
+func RegisterMiddlewares(mod contracts.Module) {
+	service := mod.App().Services().Middleware
+	for _, m := range middlewares {
+		service.Register(m.name, m.constructor)
+	}
 }
 `
