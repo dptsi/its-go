@@ -51,5 +51,5 @@ func (s *Service) Run() error {
 	if !exist {
 		return fmt.Errorf("command %s not found\nrun this script without arguments or with argument \"help\" to show help", args[0])
 	}
-	return command.Handler()(args[1:])
+	return command.Handler(args[1:])
 }
