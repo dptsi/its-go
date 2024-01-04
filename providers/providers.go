@@ -65,6 +65,9 @@ func LoadProviders(application contracts.Application) error {
 		if err != nil {
 			return nil, err
 		}
+		if len([]byte(key)) != 32 {
+			return nil, fmt.Errorf("key length must be 32 bytes. generate key using `go run script/script.go key:generate`")
+		}
 
 		return crypt.NewAesGcmEncryptionService(key)
 	})
