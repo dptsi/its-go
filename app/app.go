@@ -23,7 +23,7 @@ func NewApplication(ctx context.Context, i *do.Injector, cfg map[string]interfac
 	}
 }
 
-type Provider[T any] func(contracts.Application) (T, error)
+type Provider[T any] func(application contracts.Application) (T, error)
 
 func Bind[T any](app contracts.Application, name string, provider Provider[T]) {
 	do.ProvideNamed[T](app.Injector(), name, func(i *do.Injector) (T, error) {
