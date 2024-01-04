@@ -50,7 +50,7 @@ func RegisterRoutes(mod contracts.Module) {
 	// Controllers
 
 	// Routes
-	g.POST("/hello", middlewareService.Use("auth", nil), func(ctx *web.Context) {
+	g.GET("/hello", middlewareService.Use("auth", nil), func(ctx *web.Context) {
 		ctx.JSON(http.StatusOK, web.H{
 			"code":    0,
 			"message": "hello from module {{.Name}}",
