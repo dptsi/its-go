@@ -1,8 +1,8 @@
 package contracts
 
 import (
-	"bitbucket.org/dptsi/its-go/models"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/models"
+	"github.com/dptsi/its-go/web"
 )
 
 type AuthService interface {

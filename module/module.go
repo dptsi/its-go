@@ -1,7 +1,7 @@
 package module
 
 import (
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/contracts"
 )
 
 type Module struct {

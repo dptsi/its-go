@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 	"fmt"
 
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/contracts"
 )
 
 type Config struct {

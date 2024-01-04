@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"bitbucket.org/dptsi/its-go/script/templates"
+	"github.com/dptsi/its-go/script/templates"
 )
 
 const (

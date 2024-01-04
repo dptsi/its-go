@@ -3,9 +3,9 @@ package entra
 import (
 	"fmt"
 
-	"bitbucket.org/dptsi/its-go/models"
-	"bitbucket.org/dptsi/its-go/oidc"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/models"
+	"github.com/dptsi/its-go/oidc"
+	"github.com/dptsi/its-go/web"
 )
 
 type entraIDClaim struct {

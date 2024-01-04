@@ -3,7 +3,7 @@ package contracts
 import (
 	"context"
 
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/web"
 	"github.com/samber/do"
 )
 

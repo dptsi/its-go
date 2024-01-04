@@ -1,6 +1,6 @@
 package contracts
 
-import "bitbucket.org/dptsi/its-go/web"
+import "github.com/dptsi/its-go/web"
 
 type Middleware interface {
 	Handle(param interface{}) web.HandlerFunc

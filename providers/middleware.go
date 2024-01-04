@@ -3,10 +3,10 @@ package providers
 import (
 	"fmt"
 
-	"bitbucket.org/dptsi/its-go/app"
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/http"
-	"bitbucket.org/dptsi/its-go/http/middleware"
+	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/http"
+	"github.com/dptsi/its-go/http/middleware"
 )
 
 func registerMiddlewares(application contracts.Application) error {

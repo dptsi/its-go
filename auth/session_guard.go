@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/models"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/models"
+	"github.com/dptsi/its-go/web"
 )
 
 type UserSessionData struct {

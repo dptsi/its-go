@@ -3,9 +3,9 @@ package middleware
 import (
 	"fmt"
 
-	"bitbucket.org/dptsi/its-go/app"
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/web"
 )
 
 type Config struct {

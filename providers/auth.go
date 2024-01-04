@@ -1,9 +1,9 @@
 package providers
 
 import (
-	"bitbucket.org/dptsi/its-go/app"
-	"bitbucket.org/dptsi/its-go/auth"
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/auth"
+	"github.com/dptsi/its-go/contracts"
 )
 
 func registerAuthGuard(application contracts.Application) error {

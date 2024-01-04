@@ -1,4 +1,4 @@
-module bitbucket.org/dptsi/its-go
+module github.com/dptsi/its-go
 
 go 1.21.4
 

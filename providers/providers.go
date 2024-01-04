@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"log"
 
-	"bitbucket.org/dptsi/its-go/app"
-	"bitbucket.org/dptsi/its-go/auth"
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/crypt"
-	"bitbucket.org/dptsi/its-go/database"
-	"bitbucket.org/dptsi/its-go/event"
-	"bitbucket.org/dptsi/its-go/http/middleware"
-	"bitbucket.org/dptsi/its-go/module"
-	"bitbucket.org/dptsi/its-go/sessions"
-	"bitbucket.org/dptsi/its-go/sessions/storage"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/auth"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/crypt"
+	"github.com/dptsi/its-go/database"
+	"github.com/dptsi/its-go/event"
+	"github.com/dptsi/its-go/http/middleware"
+	"github.com/dptsi/its-go/module"
+	"github.com/dptsi/its-go/sessions"
+	"github.com/dptsi/its-go/sessions/storage"
+	"github.com/dptsi/its-go/web"
 )
 
 func LoadProviders(application contracts.Application) error {

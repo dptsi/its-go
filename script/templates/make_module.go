@@ -3,7 +3,7 @@ package templates
 const ModuleEntrypointTemplate = `package {{.Name}}
 
 import (
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/contracts"
 	"{{.BaseMod}}/modules/{{.Name}}/internal/app/providers"
 	"{{.BaseMod}}/modules/{{.Name}}/internal/presentation/routes"
 )
@@ -20,7 +20,7 @@ func SetupModule(mod contracts.Module) {
 const ModuleDeps = `package providers
 
 import (
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/contracts"
 )
 
 func RegisterDependencies(mod contracts.Module) {
@@ -39,8 +39,8 @@ const ModuleRoutes = `package routes
 import (
 	"net/http"
 
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/web"
 )
 
 func RegisterRoutes(mod contracts.Module) {
@@ -66,7 +66,7 @@ func RegisterRoutes(mod contracts.Module) {
 const ModuleAuth = `package providers
 
 import (
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/contracts"
 )
 
 func ExtendAuth(mod contracts.Module) {
@@ -80,7 +80,7 @@ func ExtendAuth(mod contracts.Module) {
 const ModuleEvent = `package providers
 
 import (
-	"bitbucket.org/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/contracts"
 )
 
 type Listener struct {
@@ -100,7 +100,7 @@ func RegisterEvents(mod contracts.Module) {
 
 const ModuleMiddleware = `package providers
 
-import "bitbucket.org/dptsi/its-go/contracts"
+import "github.com/dptsi/its-go/contracts"
 
 type Middleware struct {
 	name        string

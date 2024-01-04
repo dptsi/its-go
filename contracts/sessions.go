@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/web"
 )
 
 type SessionData interface {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/web"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/web"
 )
 
 const sessionDataContextKey = "sessions.data"

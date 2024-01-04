@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"bitbucket.org/dptsi/its-go/contracts"
-	"bitbucket.org/dptsi/its-go/database"
-	"bitbucket.org/dptsi/its-go/sessions"
+	"github.com/dptsi/its-go/contracts"
+	"github.com/dptsi/its-go/database"
+	"github.com/dptsi/its-go/sessions"
 	"gorm.io/gorm"
 )
 
