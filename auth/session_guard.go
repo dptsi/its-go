@@ -16,7 +16,6 @@ type UserSessionData struct {
 	PreferredUsername string        `json:"preferred_username"`
 	Email             string        `json:"email"`
 	Picture           string        `json:"picture"`
-	ActiveRole        string        `json:"active_role"`
 	Roles             []models.Role `json:"roles"`
 }
 
@@ -74,7 +73,6 @@ func (g *SessionGuard) User(ctx *web.Context) *models.User {
 	for _, role := range userData.Roles {
 		user.AddRole(role.Id, role.Name, role.Permissions, role.IsDefault)
 	}
-	user.SetActiveRole(userData.ActiveRole)
 	g.SetUser(ctx, user)
 
 	return user
@@ -104,7 +102,6 @@ func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) error 
 	if user != nil {
 		userSessionData := UserSessionData{
 			Id:                strings.ToLower(user.Id()),
-			ActiveRole:        user.ActiveRole(),
 			Name:              user.Name(),
 			PreferredUsername: user.PreferredUsername(),
 			Email:             user.Email(),

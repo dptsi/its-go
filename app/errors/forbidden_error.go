@@ -18,10 +18,10 @@ type ForbiddenParam struct {
 	// Default to ""
 	Details string
 
-	// RemoveDetailsInProduction is a flag that indicates whether to remove details in production
+	// ShowDetailsInProduction is a flag that indicates whether to remove details in production
 	//
-	// Default to true
-	RemoveDetailsInProduction bool
+	// Default to false
+	ShowDetailsInProduction bool
 }
 
 // Forbidden is an error that occurs when the request is forbidden
@@ -38,7 +38,7 @@ func NewForbidden(param ForbiddenParam) Forbidden {
 	if param.Message == "" {
 		param.Message = "forbidden"
 	}
-	return Forbidden{param.Message, param.Details, param.RemoveDetailsInProduction}
+	return Forbidden{param.Message, param.Details, param.ShowDetailsInProduction}
 }
 
 func (e Forbidden) Error() string {

@@ -21,11 +21,11 @@ func registerMiddlewares(application contracts.Application) error {
 	}
 	service := application.Services().Middleware
 
-	service.Register("active_role_has_permission", func(application contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewActiveRoleHasPermission(app.MustMake[contracts.AuthService](application, "auth.service")), nil
+	service.Register("user_has_permission", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewUserHasPermission(app.MustMake[contracts.AuthService](application, "auth.service")), nil
 	})
-	service.Register("active_role_in", func(application contracts.Application) (contracts.Middleware, error) {
-		return middleware.NewActiveRoleIn(app.MustMake[contracts.AuthService](application, "auth.service")), nil
+	service.Register("user_has_role", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewUserHasRole(app.MustMake[contracts.AuthService](application, "auth.service")), nil
 	})
 	service.Register("auth", func(application contracts.Application) (contracts.Middleware, error) {
 		return middleware.NewAuth(app.MustMake[contracts.AuthService](application, "auth.service")), nil
