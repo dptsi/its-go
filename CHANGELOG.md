@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.0](https://bitbucket.org/dptsi/its-go/compare/v1.2.0...v1.3.0) (2024-01-04)
+
+
+### Features
+
+* **script:** make module ([8381da2](https://bitbucket.org/dptsi/its-go/commit/8381da2e40c17dee7af5f72d0311a42b22ef1adc))
+
+
+### Bug Fixes
+
+* error message not descriptive ([8792c06](https://bitbucket.org/dptsi/its-go/commit/8792c06c7457d22dafc881532ad8d462ce95f60f))
+
 ## [1.2.0](https://bitbucket.org/dptsi/its-go/compare/v1.1.0...v1.2.0) (2024-01-03)
 
 
