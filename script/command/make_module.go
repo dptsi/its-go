@@ -1,9 +1,7 @@
 package command
 
 import (
-	"errors"
 	"fmt"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -11,21 +9,7 @@ import (
 	"github.com/dptsi/its-go/script/templates"
 )
 
-const (
-	goModFileName = "go.mod"
-)
-
 type MakeModule struct{}
-
-type moduleConfig struct {
-	BaseMod string
-	Name    string
-	Path    string
-}
-
-func (m moduleConfig) joinPath(path string) string {
-	return fmt.Sprintf("%s/%s", m.Path, path)
-}
 
 func (c *MakeModule) Key() string {
 	return "make:module"
@@ -48,68 +32,50 @@ func (c *MakeModule) Handler(args []string) error {
 		return fmt.Errorf("no module name provided")
 	}
 	name := args[0]
-	path := fmt.Sprintf("modules/%s", name)
+	mod, err := newModule(name)
 
-	if err := os.Mkdir(path, os.ModePerm); errors.Is(err, fs.ErrExist) {
-		return fmt.Errorf("module %s already exist", name)
-	}
-	baseMod, err := c.getBaseModule()
 	if err != nil {
-		return fmt.Errorf("error when reading module name from %s: %w", goModFileName, err)
-	}
-	cfg := moduleConfig{
-		BaseMod: baseMod,
-		Name:    name,
-		Path:    path,
+		return fmt.Errorf("error creating module: %w", err)
 	}
 
-	if err := c.createModuleEntrypoint(cfg); err != nil {
+	if err := mod.createFolder(); err != nil {
+		return fmt.Errorf("error creating module: %w", err)
+	}
+
+	if err := c.createModuleEntrypoint(mod); err != nil {
 		return fmt.Errorf("error when creating module entrypoint: %w", err)
 	}
 
-	if err := c.createModuleDependenciesFile(cfg); err != nil {
+	if err := c.createModuleDependenciesFile(mod); err != nil {
 		return fmt.Errorf("error when creating dependencies.go: %w", err)
 	}
 
-	if err := c.createModuleRoutesFile(cfg); err != nil {
+	if err := c.createModuleRoutesFile(mod); err != nil {
 		return fmt.Errorf("error when creating routes.go: %w", err)
 	}
 
-	if err := c.createModuleAuthFile(cfg); err != nil {
+	if err := c.createModuleAuthFile(mod); err != nil {
 		return fmt.Errorf("error when creating auth.go: %w", err)
 	}
 
-	if err := c.createModuleEventsFile(cfg); err != nil {
+	if err := c.createModuleEventsFile(mod); err != nil {
 		return fmt.Errorf("error when creating events.go: %w", err)
 	}
 
-	if err := c.createModuleMiddlewaresFile(cfg); err != nil {
+	if err := c.createModuleMiddlewaresFile(mod); err != nil {
 		return fmt.Errorf("error when creating middlewares.go: %w", err)
 	}
 
-	if err := c.createModuleDirectories(cfg); err != nil {
+	if err := c.createModuleDirectories(mod); err != nil {
 		return fmt.Errorf("error when creating module directories: %w", err)
 	}
 
 	return nil
 }
 
-func (c *MakeModule) getBaseModule() (string, error) {
-	goMod, err := os.Open(goModFileName)
-	if err != nil {
-		return "", err
-	}
-	defer goMod.Close()
-
-	var baseMod string
-	fmt.Fscanf(goMod, "module %s", &baseMod)
-
-	return baseMod, goMod.Sync()
-}
-
-func (c *MakeModule) createModuleEntrypoint(cfg moduleConfig) error {
-	fileName := fmt.Sprintf("%s.go", cfg.Name)
-	init, err := os.Create(cfg.joinPath(fileName))
+func (c *MakeModule) createModuleEntrypoint(mod *module) error {
+	fileName := fmt.Sprintf("%s.go", mod.Name)
+	init, err := os.Create(mod.joinPath(fileName))
 	if err != nil {
 		return err
 	}
@@ -118,15 +84,15 @@ func (c *MakeModule) createModuleEntrypoint(cfg moduleConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := template.Execute(init, cfg); err != nil {
+	if err := template.Execute(init, mod); err != nil {
 		return err
 	}
 
 	return init.Sync()
 }
 
-func (c *MakeModule) createModuleDependenciesFile(cfg moduleConfig) error {
-	path := cfg.joinPath("internal/app/providers")
+func (c *MakeModule) createModuleDependenciesFile(mod *module) error {
+	path := mod.joinPath("internal/app/providers")
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
@@ -142,15 +108,15 @@ func (c *MakeModule) createModuleDependenciesFile(cfg moduleConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := template.Execute(deps, cfg); err != nil {
+	if err := template.Execute(deps, mod); err != nil {
 		return err
 	}
 
 	return deps.Sync()
 }
 
-func (c *MakeModule) createModuleRoutesFile(cfg moduleConfig) error {
-	path := cfg.joinPath("internal/presentation/routes")
+func (c *MakeModule) createModuleRoutesFile(mod *module) error {
+	path := mod.joinPath("internal/presentation/routes")
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
@@ -166,15 +132,15 @@ func (c *MakeModule) createModuleRoutesFile(cfg moduleConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := template.Execute(routes, cfg); err != nil {
+	if err := template.Execute(routes, mod); err != nil {
 		return err
 	}
 
 	return routes.Sync()
 }
 
-func (c *MakeModule) createModuleAuthFile(cfg moduleConfig) error {
-	path := cfg.joinPath("internal/app/providers")
+func (c *MakeModule) createModuleAuthFile(mod *module) error {
+	path := mod.joinPath("internal/app/providers")
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
@@ -190,15 +156,15 @@ func (c *MakeModule) createModuleAuthFile(cfg moduleConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := template.Execute(auth, cfg); err != nil {
+	if err := template.Execute(auth, mod); err != nil {
 		return err
 	}
 
 	return auth.Sync()
 }
 
-func (c *MakeModule) createModuleEventsFile(cfg moduleConfig) error {
-	path := cfg.joinPath("internal/app/providers")
+func (c *MakeModule) createModuleEventsFile(mod *module) error {
+	path := mod.joinPath("internal/app/providers")
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
@@ -214,15 +180,15 @@ func (c *MakeModule) createModuleEventsFile(cfg moduleConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := template.Execute(events, cfg); err != nil {
+	if err := template.Execute(events, mod); err != nil {
 		return err
 	}
 
 	return events.Sync()
 }
 
-func (c *MakeModule) createModuleMiddlewaresFile(cfg moduleConfig) error {
-	path := cfg.joinPath("internal/app/providers")
+func (c *MakeModule) createModuleMiddlewaresFile(mod *module) error {
+	path := mod.joinPath("internal/app/providers")
 
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
@@ -238,14 +204,14 @@ func (c *MakeModule) createModuleMiddlewaresFile(cfg moduleConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := template.Execute(middlewares, cfg); err != nil {
+	if err := template.Execute(middlewares, mod); err != nil {
 		return err
 	}
 
 	return middlewares.Sync()
 }
 
-func (c *MakeModule) createModuleDirectories(cfg moduleConfig) error {
+func (c *MakeModule) createModuleDirectories(mod *module) error {
 	var moduleFolders = []string{
 		"internal/app/commands",
 		"internal/app/listeners",
@@ -264,7 +230,7 @@ func (c *MakeModule) createModuleDirectories(cfg moduleConfig) error {
 	}
 
 	for _, relativePath := range moduleFolders {
-		path := cfg.joinPath(relativePath)
+		path := mod.joinPath(relativePath)
 		os.MkdirAll(path, os.ModePerm)
 		gitKeepPath := filepath.Join(path, ".gitkeep")
 		gitKeep, err := os.Create(gitKeepPath)

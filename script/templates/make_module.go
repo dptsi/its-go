@@ -4,8 +4,8 @@ const ModuleEntrypointTemplate = `package {{.Name}}
 
 import (
 	"github.com/dptsi/its-go/contracts"
-	"{{.BaseMod}}/modules/{{.Name}}/internal/app/providers"
-	"{{.BaseMod}}/modules/{{.Name}}/internal/presentation/routes"
+	"{{.Base}}/modules/{{.Name}}/internal/app/providers"
+	"{{.Base}}/modules/{{.Name}}/internal/presentation/routes"
 )
 
 func SetupModule(mod contracts.Module) {
