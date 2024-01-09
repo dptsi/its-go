@@ -1,5 +1,7 @@
 package templates
 
+import "fmt"
+
 var ModuleValueObject = `package valueobjects
 
 type {{.NamePascalCase}} struct {
@@ -28,3 +30,31 @@ func New{{.NamePascalCase}}(
 	}, nil
 }
 `
+
+var ModuleEventFile = fmt.Sprintf(`package events
+
+import (
+	"encoding/json"
+	"time"
+)
+
+type {{.NamePascalCase}} struct {
+	Timestamp time.Time %s
+}
+
+func New{{.NamePascalCase}}() {{.NamePascalCase}} {
+	return {{.NamePascalCase}}{
+		Timestamp: time.Now(),
+	}
+}
+
+func (p {{.NamePascalCase}}) OccuredOn() time.Time {
+	return p.Timestamp
+}
+
+func (p {{.NamePascalCase}}) JSON() ([]byte, error) {
+	return json.Marshal(p)
+}
+`,
+	"`json:\"timestamp\"`",
+)
