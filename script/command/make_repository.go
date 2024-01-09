@@ -18,11 +18,11 @@ func (c *MakeRepository) Key() string {
 }
 
 func (c *MakeRepository) Name() string {
-	return "Create new repository"
+	return "Create new repository interface"
 }
 
 func (c *MakeRepository) Description() string {
-	return "Create new repository and its boilerplate"
+	return "Create new repository interface and its boilerplate"
 }
 
 func (c *MakeRepository) Usage() string {
@@ -59,6 +59,7 @@ func (c *MakeRepository) Handler(args []string) error {
 		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
 	}
 
+	fmt.Printf("repository interface %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
 	return nil
 }
 

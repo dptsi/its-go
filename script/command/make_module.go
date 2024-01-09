@@ -70,6 +70,7 @@ func (c *MakeModule) Handler(args []string) error {
 		return fmt.Errorf("error when creating module directories: %w", err)
 	}
 
+	fmt.Printf("modul %s berhasil dibuat!\n", name)
 	return nil
 }
 

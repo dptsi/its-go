@@ -59,6 +59,7 @@ func (c *MakeCommand) Handler(args []string) error {
 		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
 	}
 
+	fmt.Printf("command handler %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
 	return nil
 }
 

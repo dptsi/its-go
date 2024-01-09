@@ -59,6 +59,7 @@ func (c *MakeQuery) Handler(args []string) error {
 		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
 	}
 
+	fmt.Printf("query object %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
 	return nil
 }
 
