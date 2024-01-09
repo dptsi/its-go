@@ -10,4 +10,5 @@ func LoadFrameworkScripts(s *Service) {
 	s.AddCommand(&command.MakeEntity{})
 	s.AddCommand(&command.MakeEvent{})
 	s.AddCommand(&command.MakeRepository{})
+	s.AddCommand(&command.MakeCommand{})
 }
