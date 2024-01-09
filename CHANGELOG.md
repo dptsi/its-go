@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.0](https://github.com/dptsi/its-go/compare/v1.1.1...v1.2.0) (2024-01-09)
+
+
+### Features
+
+* **script:** add success message ([4b194a6](https://github.com/dptsi/its-go/commit/4b194a6dc9c6bb6e045a9d9f1e1e50588737a16d))
+* **script:** make command ([8baac03](https://github.com/dptsi/its-go/commit/8baac030e861eaef798b9cc1c9a7ef41afb3c521))
+* **script:** make controller ([11e48bb](https://github.com/dptsi/its-go/commit/11e48bb064d95938b0b71248b125d46c195963e1))
+* **script:** make entity ([55332de](https://github.com/dptsi/its-go/commit/55332deb47d5e147035a575348888e44743f32ca))
+* **script:** make event ([57d9c58](https://github.com/dptsi/its-go/commit/57d9c5882d9a3894f69b04cd6f2f194f4946d8e5))
+* **script:** make query object ([082efda](https://github.com/dptsi/its-go/commit/082efda8736fc4572cf064d61b1a85c627a93fdf))
+* **script:** make repository ([f38249c](https://github.com/dptsi/its-go/commit/f38249cae1eaf5042e68920da14714de36d7ba9d))
+* **script:** make value object ([61ac4b7](https://github.com/dptsi/its-go/commit/61ac4b74afb1588442df40855c02c6afa8786156))
+* **script:** prevent user from accidentally add suffix ([564253e](https://github.com/dptsi/its-go/commit/564253ecaddcfa1319208d59f6a782f67d996139))
+
+
+### Bug Fixes
+
+* **script:** file overwritten if exists ([00765f9](https://github.com/dptsi/its-go/commit/00765f9033fe90a9baa8e7fd2873115f641b8292))
+
 ## [1.1.1](https://github.com/dptsi/its-go/compare/v1.1.0...v1.1.1) (2024-01-04)
 
 ## [1.1.0](https://github.com/dptsi/its-go/compare/v1.0.0...v1.1.0) (2024-01-04)
