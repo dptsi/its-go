@@ -7,4 +7,5 @@ func LoadFrameworkScripts(s *Service) {
 	s.AddCommand(&command.MakeModule{})
 	s.AddCommand(&command.MakeQuery{})
 	s.AddCommand(&command.MakeValueObject{})
+	s.AddCommand(&command.MakeEntity{})
 }
