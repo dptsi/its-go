@@ -58,3 +58,9 @@ func (p {{.NamePascalCase}}) JSON() ([]byte, error) {
 `,
 	"`json:\"timestamp\"`",
 )
+
+const ModuleRepositoryFile = `package repositories
+
+type {{.NamePascalCase}}Repository interface {
+}
+`
