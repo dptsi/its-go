@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/dptsi/its-go/script/templates"
@@ -37,6 +38,13 @@ func (c *MakeCommand) Handler(args []string) error {
 	}
 	modName := args[0]
 	snakeCaseName := args[1]
+	suffix := "_command"
+	if strings.HasSuffix(snakeCaseName, suffix) {
+		snakeCaseName = strings.TrimSuffix(snakeCaseName, suffix)
+		fmt.Printf("tidak perlu pakai suffix %s ya rekan2\n", suffix)
+		fmt.Printf("suffix yang ada akan ditambahkan otomatis\n")
+		fmt.Printf("kedepannya cukup jalankan script dengan `%s %s %s` saja\n", c.Key(), modName, snakeCaseName)
+	}
 	mod, err := newModule(modName)
 
 	if err != nil {
