@@ -58,6 +58,9 @@ func (c *MakeValueObject) createValueObjectFile(mod *module, snakeCaseName strin
 	path := mod.joinPath("internal/domain/valueobjects")
 
 	path = filepath.Join(path, fmt.Sprintf("%s.go", snakeCaseName))
+	if _, err := os.Stat(path); err == nil {
+		return fmt.Errorf("file %s already exists", path)
+	}
 	valueObject, err := os.Create(path)
 	if err != nil {
 		return err

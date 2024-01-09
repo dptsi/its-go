@@ -58,6 +58,9 @@ func (c *MakeQuery) createQueryObjectFile(mod *module, snakeCaseName string) err
 	path := mod.joinPath("internal/app/queries")
 
 	path = filepath.Join(path, fmt.Sprintf("%s_query.go", snakeCaseName))
+	if _, err := os.Stat(path); err == nil {
+		return fmt.Errorf("file %s already exists", path)
+	}
 	queryObject, err := os.Create(path)
 	if err != nil {
 		return err
