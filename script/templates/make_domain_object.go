@@ -2,7 +2,7 @@ package templates
 
 import "fmt"
 
-var ModuleValueObject = `package valueobjects
+const ModuleValueObject = `package valueobjects
 
 type {{.NamePascalCase}} struct {
 }
@@ -12,7 +12,7 @@ func New{{.NamePascalCase}}() ({{.NamePascalCase}}, error) {
 }
 `
 
-var ModuleEntity = `package entities
+const ModuleEntity = `package entities
 
 import "github.com/dptsi/its-go/contracts"
 

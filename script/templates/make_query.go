@@ -1,6 +1,6 @@
 package templates
 
-var ModuleQueryObject = `package queries
+const ModuleQueryObject = `package queries
 
 type {{.NamePascalCase}} struct {
 }
