@@ -55,18 +55,16 @@ func (c *MakeController) Handler(args []string) error {
 		return fmt.Errorf("error detecting module: %w", err)
 	}
 
-	if err := c.createControllerFile(mod, snakeCaseName); err != nil {
-		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
+	path := filepath.Join(mod.joinPath("internal/presentation/controllers"), fmt.Sprintf("%s_controller.go", snakeCaseName))
+	if err := c.createControllerFile(mod, snakeCaseName, path); err != nil {
+		return fmt.Errorf("error when creating %s: %w", path, err)
 	}
 
-	fmt.Printf("controller %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
+	fmt.Printf("controller %s berhasil dibuat pada %s!\n", snakeCaseName, path)
 	return nil
 }
 
-func (c *MakeController) createControllerFile(mod *module, snakeCaseName string) error {
-	path := mod.joinPath("internal/presentation/controllers")
-
-	path = filepath.Join(path, fmt.Sprintf("%s_controller.go", snakeCaseName))
+func (c *MakeController) createControllerFile(mod *module, snakeCaseName, path string) error {
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("file %s already exists", path)
 	}

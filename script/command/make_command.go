@@ -55,18 +55,16 @@ func (c *MakeCommand) Handler(args []string) error {
 		return fmt.Errorf("error detecting module: %w", err)
 	}
 
-	if err := c.createCommandFile(mod, snakeCaseName); err != nil {
-		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
+	path := filepath.Join(mod.joinPath("internal/app/commands"), fmt.Sprintf("%s.go", snakeCaseName))
+	if err := c.createCommandFile(mod, snakeCaseName, path); err != nil {
+		return fmt.Errorf("error when creating %s: %w", path, err)
 	}
 
-	fmt.Printf("command handler %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
+	fmt.Printf("command handler %s berhasil dibuat pada %s!\n", snakeCaseName, path)
 	return nil
 }
 
-func (c *MakeCommand) createCommandFile(mod *module, snakeCaseName string) error {
-	path := mod.joinPath("internal/app/commands")
-
-	path = filepath.Join(path, fmt.Sprintf("%s.go", snakeCaseName))
+func (c *MakeCommand) createCommandFile(mod *module, snakeCaseName, path string) error {
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("file %s already exists", path)
 	}

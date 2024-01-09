@@ -55,18 +55,16 @@ func (c *MakeQuery) Handler(args []string) error {
 		return fmt.Errorf("error creating module: %w", err)
 	}
 
-	if err := c.createQueryObjectFile(mod, snakeCaseName); err != nil {
-		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
+	path := filepath.Join(mod.joinPath("internal/app/queries"), fmt.Sprintf("%s_query.go", snakeCaseName))
+	if err := c.createQueryObjectFile(mod, snakeCaseName, path); err != nil {
+		return fmt.Errorf("error when creating %s: %w", path, err)
 	}
 
-	fmt.Printf("query object %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
+	fmt.Printf("query object %s berhasil dibuat pada %s!\n", snakeCaseName, path)
 	return nil
 }
 
-func (c *MakeQuery) createQueryObjectFile(mod *module, snakeCaseName string) error {
-	path := mod.joinPath("internal/app/queries")
-
-	path = filepath.Join(path, fmt.Sprintf("%s_query.go", snakeCaseName))
+func (c *MakeQuery) createQueryObjectFile(mod *module, snakeCaseName, path string) error {
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("file %s already exists", path)
 	}

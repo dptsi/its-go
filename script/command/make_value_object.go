@@ -47,18 +47,16 @@ func (c *MakeValueObject) Handler(args []string) error {
 		return fmt.Errorf("error detecting module: %w", err)
 	}
 
-	if err := c.createValueObjectFile(mod, snakeCaseName); err != nil {
-		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
+	path := filepath.Join(mod.joinPath("internal/domain/valueobjects"), fmt.Sprintf("%s.go", snakeCaseName))
+	if err := c.createValueObjectFile(mod, snakeCaseName, path); err != nil {
+		return fmt.Errorf("error when creating %s: %w", path, err)
 	}
 
-	fmt.Printf("value object %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
+	fmt.Printf("value object %s berhasil dibuat pada %s!\n", snakeCaseName, path)
 	return nil
 }
 
-func (c *MakeValueObject) createValueObjectFile(mod *module, snakeCaseName string) error {
-	path := mod.joinPath("internal/domain/valueobjects")
-
-	path = filepath.Join(path, fmt.Sprintf("%s.go", snakeCaseName))
+func (c *MakeValueObject) createValueObjectFile(mod *module, snakeCaseName, path string) error {
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("file %s already exists", path)
 	}

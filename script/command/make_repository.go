@@ -55,18 +55,16 @@ func (c *MakeRepository) Handler(args []string) error {
 		return fmt.Errorf("error detecting module: %w", err)
 	}
 
-	if err := c.createRepositoryFile(mod, snakeCaseName); err != nil {
-		return fmt.Errorf("error when creating %s.go: %w", snakeCaseName, err)
+	path := filepath.Join(mod.joinPath("internal/domain/repositories"), fmt.Sprintf("%s_repository.go", snakeCaseName))
+	if err := c.createRepositoryFile(mod, snakeCaseName, path); err != nil {
+		return fmt.Errorf("error when creating %s: %w", path, err)
 	}
 
-	fmt.Printf("repository interface %s berhasil dibuat pada modul %s!\n", snakeCaseName, modName)
+	fmt.Printf("repository interface %s berhasil dibuat pada %s!\n", snakeCaseName, path)
 	return nil
 }
 
-func (c *MakeRepository) createRepositoryFile(mod *module, snakeCaseName string) error {
-	path := mod.joinPath("internal/domain/repositories")
-
-	path = filepath.Join(path, fmt.Sprintf("%s_repository.go", snakeCaseName))
+func (c *MakeRepository) createRepositoryFile(mod *module, snakeCaseName, path string) error {
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("file %s already exists", path)
 	}
