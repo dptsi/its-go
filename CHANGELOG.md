@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.1](https://github.com/dptsi/its-go/compare/v1.3.0...v1.3.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* session expired without checking last active time ([9f36160](https://github.com/dptsi/its-go/commit/9f361601b87d929ff51341897fdfc803a1b9364a))
+
 ## [1.3.0](https://github.com/dptsi/its-go/compare/v1.2.1...v1.3.0) (2024-01-09)
 
 
