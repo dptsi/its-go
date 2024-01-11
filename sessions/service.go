@@ -184,13 +184,17 @@ func (s *Service) Start(ctx *web.Context) error {
 
 	if data == nil {
 		data = NewEmptyData(int64(s.cfg.Cookie.Lifetime))
-		if err := s.storage.Save(ctx, data); err != nil {
-			return err
-		}
-		s.writer.Write(ctx, data)
+	} else {
+		// Update cookie expiration
+		data.expiredAt = getExpirationFromMaxAge(int64(s.cfg.Cookie.Lifetime))
+	}
+
+	if err := s.storage.Save(ctx, data); err != nil {
+		return err
 	}
 
 	ctx.Set(sessionDataContextKey, data)
+	s.writer.Write(ctx, data)
 	return nil
 }
 

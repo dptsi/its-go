@@ -65,13 +65,12 @@ func (d *Data) ExpiredAt() time.Time {
 }
 
 func NewEmptyData(maxAge int64) *Data {
-	expiredAt := time.Now().Add(time.Minute * time.Duration(maxAge))
 
 	return &Data{
 		id:        uuid.NewString(),
 		csrfToken: uuid.NewString(),
 		data:      make(map[string]interface{}),
-		expiredAt: expiredAt,
+		expiredAt: getExpirationFromMaxAge(maxAge),
 	}
 }
 
@@ -82,4 +81,8 @@ func NewData(id string, csrfToken string, data map[string]interface{}, expiredAt
 		data:      data,
 		expiredAt: expiredAt,
 	}
+}
+
+func getExpirationFromMaxAge(maxAge int64) time.Time {
+	return time.Now().Add(time.Minute * time.Duration(maxAge))
 }
