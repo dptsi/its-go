@@ -2,6 +2,7 @@ package web
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -38,7 +39,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 		if errors.As(err, &validationErrors) {
 			errorData := commonErrors.GetValidationErrors(validationErrors)
 			data["errors"] = errorData
-			// log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusBadRequest,
 				H{
@@ -48,7 +49,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else if errors.As(err, &badRequestError) {
-			// log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
 			for key, val := range badRequestError.Data() {
 				data[key] = val
 			}
@@ -61,7 +62,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else if errors.As(err, &invariantError) {
-			// log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 400; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusBadRequest,
 				H{
@@ -71,7 +72,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else if errors.As(err, &notFoundError) {
-			// log.Printf("Request ID: %s; Status: 404; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 404; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusNotFound,
 				H{
@@ -81,7 +82,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else if errors.As(err, &aggregateVersionMismatchError) {
-			// log.Printf("Request ID: %s; Status: 409; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 409; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusConflict,
 				H{
@@ -91,7 +92,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else if errors.As(err, &forbiddenErr) {
-			// log.Printf("Request ID: %s; Status: 403; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 403; Error: %s\n", requestId, err.Error())
 			if (isDebugMode || !forbiddenErr.IsDetailRemovedInProd()) && forbiddenErr.Details() != "" {
 				data["error"] = forbiddenErr.Details()
 			}
@@ -104,7 +105,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else if errors.As(err, &unauthorizedErr) {
-			// log.Printf("Request ID: %s; Status: 401; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 401; Error: %s\n", requestId, err.Error())
 			ctx.JSON(
 				http.StatusUnauthorized,
 				H{
@@ -114,7 +115,7 @@ func globalErrorHandler(isDebugMode bool) HandlerFunc {
 				},
 			)
 		} else {
-			// log.Printf("Request ID: %s; Status: 500; Error: %s\n", requestId, err.Error())
+			log.Printf("Request ID: %s; Status: 500; Error: %s\n", requestId, err.Error())
 			if isDebugMode {
 				data["error"] = err.Error()
 			}
