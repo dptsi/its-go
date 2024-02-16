@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.0](https://github.com/dptsi/its-go/compare/v1.3.2...v1.4.0) (2024-02-16)
+
+
+### Features
+
+* **activity log:** service ([40d9a83](https://github.com/dptsi/its-go/commit/40d9a8379717f315350e1f705df406aa9b5f9196))
+* **auth:** impersonator_id information ([f3a0c93](https://github.com/dptsi/its-go/commit/f3a0c93411d67048097313e306bc8c28d91e9492))
+* **logging:** service ([3b5c23c](https://github.com/dptsi/its-go/commit/3b5c23c6a1f1a298e1dd740b70420e1889f715a5))
+
+
+### Bug Fixes
+
+* unused logging info ([eff9b41](https://github.com/dptsi/its-go/commit/eff9b41a3524bce689ed728442e5f97468b1d146))
+* **web:** missing logging ([47261dc](https://github.com/dptsi/its-go/commit/47261dcac37b062b19008d12a44de13483b73550))
+
 ## [1.3.2](https://github.com/dptsi/its-go/compare/v1.3.1...v1.3.2) (2024-02-16)
 
 
