@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/dptsi/its-go/activitylog"
 	"github.com/dptsi/its-go/app"
 	"github.com/dptsi/its-go/auth"
 	"github.com/dptsi/its-go/contracts"
@@ -44,6 +45,11 @@ func LoadProviders(application contracts.Application) error {
 	if !ok {
 		return fmt.Errorf("web config is not available")
 	}
+
+	app.Bind[contracts.ActivityLogService](application, "activity_log.service", func(application contracts.Application) (contracts.ActivityLogService, error) {
+		logger := app.MustMake[contracts.LoggingService](application, "logging.service")
+		return activitylog.NewService(logger), nil
+	})
 
 	// log.Println("Registering authentication service...")
 	app.Bind[contracts.AuthService](application, "auth.service", func(application contracts.Application) (contracts.AuthService, error) {

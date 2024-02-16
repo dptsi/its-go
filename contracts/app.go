@@ -8,15 +8,16 @@ import (
 )
 
 type ApplicationServices struct {
-	Auth       AuthService
-	Crypt      CryptService
-	Database   DatabaseService
-	Event      EventService
-	Logging    LoggingService
-	Middleware MiddlewareService
-	Module     ModuleService
-	Session    SessionService
-	WebEngine  *web.Engine
+	Auth        AuthService
+	ActivityLog ActivityLogService
+	Crypt       CryptService
+	Database    DatabaseService
+	Event       EventService
+	Logging     LoggingService
+	Middleware  MiddlewareService
+	Module      ModuleService
+	Session     SessionService
+	WebEngine   *web.Engine
 }
 
 type Application interface {

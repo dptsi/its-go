@@ -61,14 +61,15 @@ func (app *Application) Injector() *do.Injector {
 
 func (app *Application) Services() contracts.ApplicationServices {
 	return contracts.ApplicationServices{
-		Auth:       MustMake[contracts.AuthService](app, "auth.service"),
-		Crypt:      MustMake[contracts.CryptService](app, "crypt.service"),
-		Database:   MustMake[contracts.DatabaseService](app, "database.service"),
-		Event:      MustMake[contracts.EventService](app, "event.service"),
-		Logging:    MustMake[contracts.LoggingService](app, "logging.service"),
-		Middleware: MustMake[contracts.MiddlewareService](app, "http.middleware.service"),
-		Module:     MustMake[contracts.ModuleService](app, "module.service"),
-		Session:    MustMake[contracts.SessionService](app, "sessions.service"),
-		WebEngine:  MustMake[*web.Engine](app, "web.engine"),
+		Auth:        MustMake[contracts.AuthService](app, "auth.service"),
+		ActivityLog: MustMake[contracts.ActivityLogService](app, "activity_log.service"),
+		Crypt:       MustMake[contracts.CryptService](app, "crypt.service"),
+		Database:    MustMake[contracts.DatabaseService](app, "database.service"),
+		Event:       MustMake[contracts.EventService](app, "event.service"),
+		Logging:     MustMake[contracts.LoggingService](app, "logging.service"),
+		Middleware:  MustMake[contracts.MiddlewareService](app, "http.middleware.service"),
+		Module:      MustMake[contracts.ModuleService](app, "module.service"),
+		Session:     MustMake[contracts.SessionService](app, "sessions.service"),
+		WebEngine:   MustMake[*web.Engine](app, "web.engine"),
 	}
 }
