@@ -18,6 +18,7 @@ type UserSessionData struct {
 	Phone             string        `json:"phone"`
 	Picture           string        `json:"picture"`
 	Roles             []models.Role `json:"roles"`
+	ImpersonatorId    *string       `json:"impersonator_id"`
 }
 
 const userContextKey = "auth.user"
@@ -72,6 +73,7 @@ func (g *SessionGuard) User(ctx *web.Context) *models.User {
 	user.SetName(userData.Name)
 	user.SetPreferredUsername(userData.PreferredUsername)
 	user.SetPicture(userData.Picture)
+	user.SetImpersonatorId(userData.ImpersonatorId)
 	for _, role := range userData.Roles {
 		user.AddRole(role.Id, role.Name, role.Permissions, role.IsDefault)
 	}
@@ -110,6 +112,7 @@ func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) error 
 			Phone:             user.Phone(),
 			Picture:           user.Picture(),
 			Roles:             user.Roles(),
+			ImpersonatorId:    user.ImpersonatorId(),
 		}
 		userJson, err := json.Marshal(userSessionData)
 		if err != nil {

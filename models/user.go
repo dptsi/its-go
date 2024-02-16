@@ -22,6 +22,7 @@ type User struct {
 	picture            string
 	roles              []Role
 	hashedPassword     string
+	impersonatorId     *string
 }
 
 func NewUser(id string) *User {
@@ -106,4 +107,12 @@ func (u *User) HashedPassword() string {
 
 func (u *User) SetHashedPassword(hashedPassword string) {
 	u.hashedPassword = hashedPassword
+}
+
+func (u *User) ImpersonatorId() *string {
+	return u.impersonatorId
+}
+
+func (u *User) SetImpersonatorId(impersonatorId *string) {
+	u.impersonatorId = impersonatorId
 }

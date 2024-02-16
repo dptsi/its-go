@@ -55,6 +55,7 @@ type userInfoRaw struct {
 	Group             []group      `json:"group"`
 	Roles             []role       `json:"role"`
 	Resource          interface{}  `json:"resource"`
+	OriginalUserId    *string      `json:"original_user_id"`
 }
 
 func GetUserFromAuthorizationCode(ctx *web.Context, oidcClient *oidc.Client, code string, state string) (*models.User, error) {
@@ -74,6 +75,7 @@ func GetUserFromAuthorizationCode(ctx *web.Context, oidcClient *oidc.Client, cod
 	user.SetEmail(userInfo.Email)
 	user.SetPhone(userInfo.Phone)
 	user.SetPicture(userInfo.Picture)
+	user.SetImpersonatorId(userInfo.OriginalUserId)
 	for _, r := range userInfo.Roles {
 		permissions := make([]string, 0)
 		userInfoResourceInterface, ok := userInfo.Resource.(map[string]interface{})
