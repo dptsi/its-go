@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.2](https://github.com/dptsi/its-go/compare/v1.3.1...v1.3.2) (2024-02-16)
+
+
+### Bug Fixes
+
+* **sso:** missing phone and group ([353eddb](https://github.com/dptsi/its-go/commit/353eddb1c10ddb666e5ad6b806c1dbae25b73cac))
+
 ## [1.3.1](https://github.com/dptsi/its-go/compare/v1.3.0...v1.3.1) (2024-01-11)
 
 
