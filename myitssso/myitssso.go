@@ -34,6 +34,11 @@ type role struct {
 	IsDefault stringAsBool `json:"is_default"`
 }
 
+type group struct {
+	GroupId   string `json:"group_id"`
+	GroupName string `json:"group_name"`
+}
+
 type resource struct {
 	Path string `json:"path"`
 }
@@ -43,8 +48,11 @@ type userInfoRaw struct {
 	Name              string       `json:"name"`
 	Email             string       `json:"email"`
 	EmailVerified     stringAsBool `json:"email_verified"`
+	Phone             string       `json:"phone"`
+	PhoneVerified     stringAsBool `json:"phone_verified"`
 	Picture           string       `json:"picture"`
 	PreferredUsername string       `json:"preferred_username"`
+	Group             []group      `json:"group"`
 	Roles             []role       `json:"role"`
 	Resource          interface{}  `json:"resource"`
 }
@@ -64,6 +72,7 @@ func GetUserFromAuthorizationCode(ctx *web.Context, oidcClient *oidc.Client, cod
 	user.SetName(userInfo.Name)
 	user.SetPreferredUsername(userInfo.PreferredUsername)
 	user.SetEmail(userInfo.Email)
+	user.SetPhone(userInfo.Phone)
 	user.SetPicture(userInfo.Picture)
 	for _, r := range userInfo.Roles {
 		permissions := make([]string, 0)
@@ -84,6 +93,10 @@ func GetUserFromAuthorizationCode(ctx *web.Context, oidcClient *oidc.Client, cod
 		}
 
 		user.AddRole(r.RoleId, r.RoleName, permissions, bool(r.IsDefault))
+	}
+
+	for _, g := range userInfo.Group {
+		user.AddRole(g.GroupId, g.GroupName, nil, false)
 	}
 
 	return user, nil

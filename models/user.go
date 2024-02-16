@@ -18,6 +18,7 @@ type User struct {
 	name               string
 	preferred_username string
 	email              string
+	phone              string
 	picture            string
 	roles              []Role
 	hashedPassword     string
@@ -56,6 +57,14 @@ func (u *User) Email() string {
 
 func (u *User) SetEmail(email string) {
 	u.email = email
+}
+
+func (u *User) Phone() string {
+	return u.phone
+}
+
+func (u *User) SetPhone(phone string) {
+	u.phone = phone
 }
 
 func (u *User) Picture() string {

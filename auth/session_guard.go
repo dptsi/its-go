@@ -15,6 +15,7 @@ type UserSessionData struct {
 	Name              string        `json:"name"`
 	PreferredUsername string        `json:"preferred_username"`
 	Email             string        `json:"email"`
+	Phone             string        `json:"phone"`
 	Picture           string        `json:"picture"`
 	Roles             []models.Role `json:"roles"`
 }
@@ -67,6 +68,7 @@ func (g *SessionGuard) User(ctx *web.Context) *models.User {
 
 	user = models.NewUser(userData.Id)
 	user.SetEmail(userData.Email)
+	user.SetPhone(userData.Phone)
 	user.SetName(userData.Name)
 	user.SetPreferredUsername(userData.PreferredUsername)
 	user.SetPicture(userData.Picture)
@@ -105,6 +107,7 @@ func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) error 
 			Name:              user.Name(),
 			PreferredUsername: user.PreferredUsername(),
 			Email:             user.Email(),
+			Phone:             user.Phone(),
 			Picture:           user.Picture(),
 			Roles:             user.Roles(),
 		}
