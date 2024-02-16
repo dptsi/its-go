@@ -12,6 +12,7 @@ type ApplicationServices struct {
 	Crypt      CryptService
 	Database   DatabaseService
 	Event      EventService
+	Logging    LoggingService
 	Middleware MiddlewareService
 	Module     ModuleService
 	Session    SessionService

@@ -65,6 +65,7 @@ func (app *Application) Services() contracts.ApplicationServices {
 		Crypt:      MustMake[contracts.CryptService](app, "crypt.service"),
 		Database:   MustMake[contracts.DatabaseService](app, "database.service"),
 		Event:      MustMake[contracts.EventService](app, "event.service"),
+		Logging:    MustMake[contracts.LoggingService](app, "logging.service"),
 		Middleware: MustMake[contracts.MiddlewareService](app, "http.middleware.service"),
 		Module:     MustMake[contracts.ModuleService](app, "module.service"),
 		Session:    MustMake[contracts.SessionService](app, "sessions.service"),

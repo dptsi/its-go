@@ -12,6 +12,7 @@ import (
 	"github.com/dptsi/its-go/database"
 	"github.com/dptsi/its-go/event"
 	"github.com/dptsi/its-go/http/middleware"
+	"github.com/dptsi/its-go/logging"
 	"github.com/dptsi/its-go/module"
 	"github.com/dptsi/its-go/sessions"
 	"github.com/dptsi/its-go/sessions/storage"
@@ -27,6 +28,10 @@ func LoadProviders(application contracts.Application) error {
 	dbConfig, ok := config["database"].(database.Config)
 	if !ok {
 		return fmt.Errorf("database config is not available")
+	}
+	loggingConfig, ok := config["logging"].(logging.Config)
+	if !ok {
+		return fmt.Errorf("logging config is not available")
 	}
 	middlewareConfig, ok := config["middleware"].(middleware.Config)
 	if !ok {
@@ -58,6 +63,12 @@ func LoadProviders(application contracts.Application) error {
 		return database.NewService(dbConfig)
 	})
 	log.Println("Database service registered!")
+
+	log.Println("Registering logging service...")
+	app.Bind[contracts.LoggingService](application, "logging.service", func(application contracts.Application) (contracts.LoggingService, error) {
+		return logging.NewService(application, loggingConfig), nil
+	})
+	log.Println("Logging service registered!")
 
 	log.Println("Registering encryption service...")
 	app.Bind[contracts.CryptService](application, "crypt.service", func(application contracts.Application) (contracts.CryptService, error) {
@@ -124,6 +135,9 @@ func LoadProviders(application contracts.Application) error {
 	log.Println("Web server registered!")
 
 	if err := registerAuthGuard(application); err != nil {
+		return err
+	}
+	if err := registerLogger(application); err != nil {
 		return err
 	}
 	if err := registerMiddlewares(application); err != nil {
