@@ -3,7 +3,6 @@ package providers
 import (
 	"encoding/base64"
 	"fmt"
-	"log"
 
 	"github.com/dptsi/its-go/app"
 	"github.com/dptsi/its-go/auth"
@@ -46,31 +45,31 @@ func LoadProviders(application contracts.Application) error {
 		return fmt.Errorf("web config is not available")
 	}
 
-	log.Println("Registering authentication service...")
+	// log.Println("Registering authentication service...")
 	app.Bind[contracts.AuthService](application, "auth.service", func(application contracts.Application) (contracts.AuthService, error) {
 		return auth.NewService(application), nil
 	})
-	log.Println("Authentication service registered!")
+	// log.Println("Authentication service registered!")
 
-	log.Println("Registering event service...")
+	// log.Println("Registering event service...")
 	app.Bind[contracts.EventService](application, "event.service", func(application contracts.Application) (contracts.EventService, error) {
 		return event.NewService(application), nil
 	})
-	log.Println("Event service registered!")
+	// log.Println("Event service registered!")
 
-	log.Println("Registering database service...")
+	// log.Println("Registering database service...")
 	app.Bind[contracts.DatabaseService](application, "database.service", func(application contracts.Application) (contracts.DatabaseService, error) {
 		return database.NewService(dbConfig)
 	})
-	log.Println("Database service registered!")
+	// log.Println("Database service registered!")
 
-	log.Println("Registering logging service...")
+	// log.Println("Registering logging service...")
 	app.Bind[contracts.LoggingService](application, "logging.service", func(application contracts.Application) (contracts.LoggingService, error) {
 		return logging.NewService(application, loggingConfig), nil
 	})
-	log.Println("Logging service registered!")
+	// log.Println("Logging service registered!")
 
-	log.Println("Registering encryption service...")
+	// log.Println("Registering encryption service...")
 	app.Bind[contracts.CryptService](application, "crypt.service", func(application contracts.Application) (contracts.CryptService, error) {
 		key, err := base64.StdEncoding.DecodeString(cryptConfig.Key)
 		if err != nil {
@@ -82,21 +81,21 @@ func LoadProviders(application contracts.Application) error {
 
 		return crypt.NewAesGcmEncryptionService(key)
 	})
-	log.Println("Encryption service registered!")
+	// log.Println("Encryption service registered!")
 
-	log.Println("Registering middleware service...")
+	// log.Println("Registering middleware service...")
 	app.Bind[contracts.MiddlewareService](application, "http.middleware.service", func(a contracts.Application) (contracts.MiddlewareService, error) {
 		return middleware.NewService(application, middlewareConfig), nil
 	})
-	log.Println("Middleware service registered!")
+	// log.Println("Middleware service registered!")
 
-	log.Println("Registering module service...")
+	// log.Println("Registering module service...")
 	app.Bind[contracts.ModuleService](application, "module.service", func(application contracts.Application) (contracts.ModuleService, error) {
 		return module.NewService(application), nil
 	})
-	log.Println("Module service registered!")
+	// log.Println("Module service registered!")
 
-	log.Println("Registering sessions service...")
+	// log.Println("Registering sessions service...")
 	app.Bind[contracts.SessionCookieWriter](application, "sessions.cookie_writer", func(application contracts.Application) (contracts.SessionCookieWriter, error) {
 		return sessions.NewCookieUtil(sessionsConfig.Cookie), nil
 	})
@@ -121,9 +120,9 @@ func LoadProviders(application contracts.Application) error {
 
 		return service, err
 	})
-	log.Println("Session service registered!")
+	// log.Println("Session service registered!")
 
-	log.Println("Registering web server...")
+	// log.Println("Registering web server...")
 	app.Bind[*web.Engine](application, "web.engine", func(a contracts.Application) (*web.Engine, error) {
 		engine, err := web.SetupEngine(webConfig)
 		if err != nil {
@@ -132,7 +131,7 @@ func LoadProviders(application contracts.Application) error {
 
 		return engine, nil
 	})
-	log.Println("Web server registered!")
+	// log.Println("Web server registered!")
 
 	if err := registerAuthGuard(application); err != nil {
 		return err

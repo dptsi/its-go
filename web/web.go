@@ -1,7 +1,6 @@
 package web
 
 import (
-	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -72,6 +71,6 @@ func SetupEngine(cfg Config) (*Engine, error) {
 	}))
 	r.Use(globalErrorHandler(cfg.IsDebugMode))
 
-	log.Println("Gin server successfully set up!")
+	// log.Println("Gin server successfully set up!")
 	return r, nil
 }

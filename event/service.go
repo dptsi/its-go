@@ -24,20 +24,20 @@ func NewService(application contracts.Application) *Service {
 func (s *Service) Dispatch(ctx context.Context, name string, payload contracts.Event) {
 	listenerCount, exists := s.listenersCount[name]
 	if !exists {
-		log.Printf("event service: dispatch: event name %s is not found", name)
+		// log.Printf("event service: dispatch: event name %s is not found", name)
 		return
 	}
 
 	for i := 0; i < listenerCount; i += 1 {
 		listener, err := app.Make[contracts.EventListener](s.application, s.getListenerServiceKey(name, i))
 		if err != nil {
-			log.Printf("event service: dispatch: error when constructing listener for event %s with index %d: %s", name, i, err.Error())
+			// log.Printf("event service: dispatch: error when constructing listener for event %s with index %d: %s", name, i, err.Error())
 			return
 		}
 
 		if err := listener.Handle(ctx, payload); err != nil {
-			log.Printf("event service: dispatch: listener %s return error: %s", listener.Name(), err.Error())
-			log.Printf("event service: dispatch: remaining listener for event %s will not be executed", name)
+			// log.Printf("event service: dispatch: listener %s return error: %s", listener.Name(), err.Error())
+			// log.Printf("event service: dispatch: remaining listener for event %s will not be executed", name)
 			return
 		}
 	}
