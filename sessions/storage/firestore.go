@@ -12,23 +12,23 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type FirestoreSessionData struct {
+type FirestoreData struct {
 	Data      map[string]interface{} `firestore:"data"`
 	ExpiredAt time.Time              `firestore:"expired_at"`
 	CSRFToken string                 `firestore:"csrf_token"`
 }
 
-type SessionStorage struct {
+type Firestore struct {
 	client     *firestore.Client
 	collection string
 }
 
-func NewSessionStorage(client *firestore.Client, collection string) *SessionStorage {
-	return &SessionStorage{client, collection}
+func NewFirestore(client *firestore.Client, collection string) *Firestore {
+	return &Firestore{client, collection}
 }
 
-func (s *SessionStorage) Get(ctx context.Context, id string) (contracts.SessionData, error) {
-	var data FirestoreSessionData
+func (s *Firestore) Get(ctx context.Context, id string) (contracts.SessionData, error) {
+	var data FirestoreData
 	if uuid.Validate(id) != nil {
 		return nil, nil
 	}
@@ -48,15 +48,15 @@ func (s *SessionStorage) Get(ctx context.Context, id string) (contracts.SessionD
 	return sess, nil
 }
 
-func (s *SessionStorage) Save(ctx context.Context, data contracts.SessionData) error {
-	fData := FirestoreSessionData{data.Data(), data.ExpiredAt(), data.CSRFToken()}
+func (s *Firestore) Save(ctx context.Context, data contracts.SessionData) error {
+	fData := FirestoreData{data.Data(), data.ExpiredAt(), data.CSRFToken()}
 	_, err := s.client.Collection(s.collection).Doc(data.Id()).
 		Set(ctx, fData)
 
 	return err
 }
 
-func (s *SessionStorage) Delete(ctx context.Context, id string) error {
+func (s *Firestore) Delete(ctx context.Context, id string) error {
 	_, err := s.client.Collection(s.collection).Doc(id).Delete(ctx)
 	return err
 }
