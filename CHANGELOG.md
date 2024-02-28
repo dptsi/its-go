@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.3](https://github.com/dptsi/its-go/compare/v1.4.2...v1.4.3) (2024-02-28)
+
+
+### Bug Fixes
+
+* **sessions:** wrong naming ([a292d6d](https://github.com/dptsi/its-go/commit/a292d6d3db498b3b67dc7768903aa62017669de2))
+
 ## [1.4.2](https://github.com/dptsi/its-go/compare/v1.4.1...v1.4.2) (2024-02-28)
 
 
