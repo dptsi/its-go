@@ -106,8 +106,11 @@ func (s *Service) Regenerate(ctx *web.Context) error {
 		return fmt.Errorf("session service: regenerate: %w", err)
 	}
 
-	data.RegenerateId()
+	if err := s.storage.Delete(ctx, data.Id()); err != nil {
+		return err
+	}
 
+	data.RegenerateId()
 	if err := s.updateToContextAndStorage(ctx, data); err != nil {
 		return err
 	}
@@ -120,6 +123,10 @@ func (s *Service) Invalidate(ctx *web.Context) error {
 	data, err := s.get(ctx)
 	if err != nil {
 		return fmt.Errorf("session service: invalidate: %w", err)
+	}
+
+	if err := s.storage.Delete(ctx, data.Id()); err != nil {
+		return err
 	}
 
 	data.RegenerateId()

@@ -8,7 +8,7 @@ import (
 	"github.com/dptsi/its-go/database"
 	"github.com/dptsi/its-go/sessions"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type DatabaseData struct {
@@ -52,14 +52,29 @@ func (g *Database) Get(ctx context.Context, id string) (contracts.SessionData, e
 }
 
 func (g *Database) Save(ctx context.Context, data contracts.SessionData) error {
-	return g.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Table(g.table).Delete(&DatabaseData{}, "id = ?", data.Id()).Error; err != nil {
-			return err
-		}
-		if err := tx.Table(g.table).Save(&DatabaseData{data.Id(), data.Data(), data.ExpiredAt(), data.CSRFToken()}).Error; err != nil {
-			return err
-		}
+	err := g.db.Clauses(
+		clause.OnConflict{
+			Columns: []clause.Column{{Name: "id"}},
+			DoUpdates: clause.Assignments(
+				map[string]interface{}{
+					"data":       data.Data(),
+					"expired_at": data.ExpiredAt(),
+					"csrf_token": data.CSRFToken(),
+				},
+			),
+		},
+	).
+		Table(g.table).
+		Save(&DatabaseData{
+			data.Id(),
+			data.Data(),
+			data.ExpiredAt(),
+			data.CSRFToken(),
+		}).Error
 
-		return nil
-	})
+	return err
+}
+
+func (g *Database) Delete(ctx context.Context, id string) error {
+	return g.db.Table(g.table).Where("id = ?", id).Delete(&DatabaseData{}).Error
 }
