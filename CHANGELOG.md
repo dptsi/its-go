@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.0](https://github.com/dptsi/its-go/compare/v1.4.3...v1.5.0) (2024-02-28)
+
+
+### Features
+
+* custom group to role mapping ([2a92332](https://github.com/dptsi/its-go/commit/2a92332c6f4c5e299bd7d8216c722ebda9a7a4ad))
+
 ## [1.4.3](https://github.com/dptsi/its-go/compare/v1.4.2...v1.4.3) (2024-02-28)
 
 
