@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.2](https://github.com/dptsi/its-go/compare/v1.4.1...v1.4.2) (2024-02-28)
+
+
+### Features
+
+* **sessions:** firestore storage ([8d4155e](https://github.com/dptsi/its-go/commit/8d4155ee7a186ed509e816be3118c8cbcf9f6d99))
+
+
+### Bug Fixes
+
+* **session:** slow tx performance & can't delete regenerated session ([952a95d](https://github.com/dptsi/its-go/commit/952a95d861a18d072c7e4c02707c5a3e7a3796da))
+
 ## [1.4.1](https://github.com/dptsi/its-go/compare/v1.4.0...v1.4.1) (2024-02-28)
 
 
