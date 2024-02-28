@@ -7,6 +7,7 @@ import (
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/database"
 	"github.com/dptsi/its-go/sessions"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -33,6 +34,9 @@ func NewDatabase(db *database.Database, table string, autoMigrate bool) *Databas
 
 func (g *Database) Get(ctx context.Context, id string) (contracts.SessionData, error) {
 	var data DatabaseData
+	if err := uuid.Validate(id); err != nil {
+		return nil, nil
+	}
 	if err := g.db.Table(g.table).Where("id = ?", id).First(&data).Error; err != nil {
 		if err == database.ErrRecordNotFound {
 			return nil, nil
