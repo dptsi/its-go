@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.1](https://github.com/dptsi/its-go/compare/v1.4.0...v1.4.1) (2024-02-28)
+
+
+### Bug Fixes
+
+* incorrect uuid error when sid is not valid uuid ([4f771df](https://github.com/dptsi/its-go/commit/4f771df8ebc0602febb99d20949614b47dfd30a8))
+
 ## [1.4.0](https://github.com/dptsi/its-go/compare/v1.3.2...v1.4.0) (2024-02-16)
 
 
