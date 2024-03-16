@@ -1,9 +1,6 @@
 package middleware
 
 import (
-	"fmt"
-	"regexp"
-
 	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/http"
@@ -18,24 +15,14 @@ var errInvalidCSRFToken = errors.NewForbidden(errors.ForbiddenParam{
 type VerifyCSRFToken struct {
 	cfg            http.CSRFConfig
 	sessionService contracts.SessionService
-	pathException  [](*regexp.Regexp)
+	pathException  []string
 }
 
 func NewVerifyCSRFToken(cfg http.CSRFConfig, sessionService contracts.SessionService) (*VerifyCSRFToken, error) {
-	exceptions := make([](*regexp.Regexp), len(cfg.Except))
-	for i, p := range cfg.Except {
-		regex, err := regexp.Compile(p)
-		if err != nil {
-			return nil, fmt.Errorf("new verify csrf token: error when compiling regex \"%s\": %w", p, err)
-		}
-
-		exceptions[i] = regex
-	}
-
 	return &VerifyCSRFToken{
 		cfg:            cfg,
 		sessionService: sessionService,
-		pathException:  exceptions,
+		pathException:  cfg.Except,
 	}, nil
 }
 
@@ -51,11 +38,11 @@ func (m *VerifyCSRFToken) Handle(interface{}) web.HandlerFunc {
 			break
 		}
 
-		for _, regex := range m.pathException {
+		for _, e := range m.pathException {
 			if !shouldCheckToken {
 				break
 			}
-			if regex.MatchString(req.URL.Path) {
+			if ctx.FullPath() == e {
 				shouldCheckToken = false
 			}
 		}
