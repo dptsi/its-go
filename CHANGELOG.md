@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.1](https://github.com/dptsi/its-go/compare/v1.5.0...v1.5.1) (2024-03-16)
+
+
+### Features
+
+* **http:** use exact path match rather than regex for csrf exclusion ([71bffbf](https://github.com/dptsi/its-go/commit/71bffbffb52abb0427ada2246a0c68f3514777fb))
+
 ## [1.5.0](https://github.com/dptsi/its-go/compare/v1.4.3...v1.5.0) (2024-02-28)
 
 
