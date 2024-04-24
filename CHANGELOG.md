@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.3](https://github.com/dptsi/its-go/compare/v1.5.2...v1.5.3) (2024-04-24)
+
+
+### Bug Fixes
+
+* **app:** missing infinite scroll response by base url ([754f61c](https://github.com/dptsi/its-go/commit/754f61ceb6bde745be529d20a0ef19b412e84de1))
+
 ## [1.5.2](https://github.com/dptsi/its-go/compare/v1.5.1...v1.5.2) (2024-04-24)
 
 
