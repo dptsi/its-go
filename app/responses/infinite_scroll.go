@@ -52,3 +52,17 @@ func (r *InfiniteScrollResult[T]) GetInfiniteScrollResponse(urlConfig UrlConfig,
 		Data: r.Data,
 	}
 }
+
+func (r *InfiniteScrollResult[T]) GetResponseByBaseUrl(baseUrl string, limit int) InfiniteScrollResponse[T] {
+	return InfiniteScrollResponse[T]{
+		Code:    http.StatusOK,
+		Message: "success",
+		Links: InfiniteScrollLinks{
+			Next: fmt.Sprintf("%s?cursor=%s&limit=%d", baseUrl, r.NextCursor, limit),
+		},
+		Meta: InfiniteScrollMeta{
+			Total: r.Total,
+		},
+		Data: r.Data,
+	}
+}
