@@ -127,21 +127,9 @@ func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state 
 
 	if s.cfg.IsRoleFromSso {
 		for _, r := range userInfo.Roles {
-			permissions := make([]string, 0)
-			userInfoResourceInterface, ok := userInfo.Resource.(map[string]interface{})
-			var userInfoResource map[string][]resource
-			// Convert to JSON first before parsing
-			if ok {
-				tmp, _ := json.Marshal(userInfoResourceInterface)
-				json.Unmarshal(tmp, &userInfoResource)
-			}
-
-			resources, ok := userInfoResource[r.RoleName]
-			if ok {
-				permissions = make([]string, len(resources))
-				for i, resource := range resources {
-					permissions[i] = resource.Path
-				}
+			permissions, ok := s.cfg.RolePermissions[r.RoleId]
+			if !ok {
+				permissions = make([]string, 0)
 			}
 
 			user.AddRole(r.RoleId, r.RoleName, permissions, bool(r.IsDefault))
