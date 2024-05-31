@@ -40,11 +40,13 @@ type InfiniteScrollResult[T any] struct {
 // GetInfiniteScrollResponse is a function to create InfiniteScrollResponse
 // from InfiniteScrollResult
 func (r *InfiniteScrollResult[T]) GetInfiniteScrollResponse(urlConfig UrlConfig, limit int) InfiniteScrollResponse[T] {
+	urlConfig.Query.Set("cursor", r.NextCursor)
+	urlConfig.Query.Set("limit", fmt.Sprintf("%d", limit))
 	return InfiniteScrollResponse[T]{
 		Code:    http.StatusOK,
 		Message: "success",
 		Links: InfiniteScrollLinks{
-			Next: fmt.Sprintf("%s?cursor=%s&limit=%d", urlConfig.FullUrl(), r.NextCursor, limit),
+			Next: fmt.Sprintf("%s?%s", urlConfig.FullUrl(), urlConfig.Query.Encode()),
 		},
 		Meta: InfiniteScrollMeta{
 			Total: r.Total,
