@@ -39,10 +39,6 @@ type Group struct {
 	GroupName string `json:"group_name"`
 }
 
-type resource struct {
-	Path string `json:"path"`
-}
-
 type userInfoRaw struct {
 	Sub               string       `json:"sub"`
 	Name              string       `json:"name"`
@@ -162,7 +158,10 @@ func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state 
 }
 
 func (s *Sso) userInfo(ctx context.Context, oidcClient *oidc.Client, tokenSource oauth2.TokenSource) (*userInfoRaw, error) {
-	userInfoURL := oidcClient.UserInfoEndpoint()
+	userInfoURL, err := oidcClient.UserInfoEndpoint(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("oidc: error getting user info endpoint: %w", err)
+	}
 	if userInfoURL == "" {
 		return nil, errors.New("oidc: user info endpoint is not supported by this provider")
 	}
