@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.5](https://github.com/dptsi/its-go/compare/v1.5.4...v1.5.5) (2024-06-09)
+
+
+### Bug Fixes
+
+* initiating oidc instance taking too long ([75ad146](https://github.com/dptsi/its-go/commit/75ad1463699af1b68c5d245ab684f0d720821534))
+
 ## [1.5.4](https://github.com/dptsi/its-go/compare/v1.5.3...v1.5.4) (2024-05-31)
 
 
