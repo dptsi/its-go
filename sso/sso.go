@@ -128,13 +128,13 @@ func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state 
 				permissions = make([]string, 0)
 			}
 
-			user.AddRole(r.RoleId, r.RoleName, permissions, bool(r.IsDefault))
+			user.AddRole(r.RoleId, r.RoleName, permissions, bool(r.IsDefault), nil)
 		}
 	}
 
 	for _, g := range userInfo.Group {
 		if s.cfg.IsGroupMappedDirectlyToRole {
-			user.AddRole(g.GroupId, g.GroupName, nil, false)
+			user.AddRole(g.GroupId, g.GroupName, nil, false, nil)
 			continue
 		}
 
@@ -151,7 +151,7 @@ func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state 
 			permissions = make([]string, 0)
 		}
 
-		user.AddRole(role.RoleId, role.RoleName, permissions, bool(role.IsDefault))
+		user.AddRole(role.RoleId, role.RoleName, permissions, bool(role.IsDefault), nil)
 	}
 
 	return user, nil

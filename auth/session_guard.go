@@ -75,7 +75,7 @@ func (g *SessionGuard) User(ctx *web.Context) *models.User {
 	user.SetPicture(userData.Picture)
 	user.SetImpersonatorId(userData.ImpersonatorId)
 	for _, role := range userData.Roles {
-		user.AddRole(role.Id, role.Name, role.Permissions, role.IsDefault)
+		user.AddRole(role.Id, role.Name, role.Permissions, role.IsDefault, role.UnitOrganizations)
 	}
 	g.SetUser(ctx, user)
 

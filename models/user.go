@@ -6,11 +6,18 @@ var (
 	ErrUserDoesNotHaveRole = errors.New("user_does_not_have_role")
 )
 
+type UnitOrganization struct {
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	NameEn string `json:"name_en"`
+}
+
 type Role struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Permissions []string `json:"permissions"`
-	IsDefault   bool     `json:"is_default"`
+	Id                string             `json:"id"`
+	Name              string             `json:"name"`
+	Permissions       []string           `json:"permissions"`
+	UnitOrganizations []UnitOrganization `json:"unit_organizations"`
+	IsDefault         bool               `json:"is_default"`
 }
 
 type User struct {
@@ -80,13 +87,52 @@ func (u *User) Roles() []Role {
 	return u.roles
 }
 
-func (u *User) AddRole(id string, name string, permissions []string, isDefault bool) {
+func (u *User) SetRoles(roles []Role) {
+	u.roles = make([]Role, 0)
+	var isRoleDuplicate = make(map[string]bool)
+	for _, role := range roles {
+		if isRoleDuplicate[role.Id] {
+			continue
+		}
+		u.roles = append(u.roles, role)
+		isRoleDuplicate[role.Id] = true
+	}
+}
+
+func (u *User) AddRole(id string, name string, permissions []string, isDefault bool, unitOrganizations []UnitOrganization) {
 	u.roles = append(u.roles, Role{
-		Id:          id,
-		Name:        name,
-		Permissions: permissions,
-		IsDefault:   isDefault,
+		Id:                id,
+		Name:              name,
+		Permissions:       permissions,
+		IsDefault:         isDefault,
+		UnitOrganizations: unitOrganizations,
 	})
+}
+
+func (u *User) RoleUnitOrganizations(roleId string) []UnitOrganization {
+	for _, role := range u.roles {
+		if role.Id == roleId {
+			return role.UnitOrganizations
+		}
+	}
+
+	return make([]UnitOrganization, 0)
+}
+
+func (u *User) HasUnitOrganizationPermission(unitOrgId, permission string) bool {
+	for _, role := range u.roles {
+		for _, unitOrg := range role.UnitOrganizations {
+			if unitOrg.Id == unitOrgId {
+				for _, perm := range role.Permissions {
+					if perm == permission {
+						return true
+					}
+				}
+			}
+		}
+	}
+
+	return false
 }
 
 func (u *User) HasPermission(permission string) bool {
