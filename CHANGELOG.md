@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.0](https://github.com/dptsi/its-go/compare/v1.5.5...v1.6.0) (2024-06-12)
+
+
+### Features
+
+* **auth:** unit org ([0307d77](https://github.com/dptsi/its-go/commit/0307d777977c7cfdbff8e374f9b6b014eb4cf4c0))
+
 ## [1.5.5](https://github.com/dptsi/its-go/compare/v1.5.4...v1.5.5) (2024-06-09)
 
 
