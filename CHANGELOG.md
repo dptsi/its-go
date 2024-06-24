@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.0](https://github.com/dptsi/its-go/compare/v1.6.1...v1.7.0) (2024-06-24)
+
+
+### Features
+
+* **app:** don't return base url in infinite scroll & table advance ([e1586f2](https://github.com/dptsi/its-go/commit/e1586f26ee5792535989bdadb2ae5c2a06423eb3))
+
 ## [1.6.1](https://github.com/dptsi/its-go/compare/v1.6.0...v1.6.1) (2024-06-24)
 
 
