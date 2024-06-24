@@ -158,10 +158,7 @@ func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state 
 }
 
 func (s *Sso) userInfo(ctx context.Context, oidcClient *oidc.Client, tokenSource oauth2.TokenSource) (*userInfoRaw, error) {
-	userInfoURL, err := oidcClient.UserInfoEndpoint(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("oidc: error getting user info endpoint: %w", err)
-	}
+	userInfoURL := oidcClient.UserInfoEndpoint()
 	if userInfoURL == "" {
 		return nil, errors.New("oidc: user info endpoint is not supported by this provider")
 	}

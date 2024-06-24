@@ -31,14 +31,8 @@ const (
 
 type Client struct {
 	provider       *oidc.Provider
-	oauthConfig    *oauth2.Config
-	providerUrl    string
+	oauthConfig    oauth2.Config
 	sessionService contracts.SessionService
-
-	clientID     string
-	clientSecret string
-	redirectURL  string
-	scopes       []string
 
 	needToVerifyState bool
 	needToVerifyNonce bool
@@ -54,66 +48,26 @@ func NewClient(
 	redirectURL string,
 	scopes []string,
 ) (*Client, error) {
-	return &Client{
-		provider:          nil,
-		oauthConfig:       nil,
-		providerUrl:       providerUrl,
-		sessionService:    sessionService,
-		clientID:          clientID,
-		clientSecret:      clientSecret,
-		redirectURL:       redirectURL,
-		scopes:            scopes,
-		needToVerifyState: true,
-		needToVerifyNonce: true,
-		isPKCEEnabled:     true,
-	}, nil
-}
-
-func (c *Client) Provider(ctx context.Context) (*oidc.Provider, error) {
-	if c.provider != nil {
-		return c.provider, nil
-	}
-
-	provider, err := oidc.NewProvider(ctx, c.providerUrl)
-	if err != nil {
-		return nil, err
-	}
-	c.provider = provider
-
-	return provider, nil
-}
-
-func (c *Client) OAuth2Config(ctx context.Context) (*oauth2.Config, error) {
-	if c.oauthConfig != nil {
-		return c.oauthConfig, nil
-	}
-
-	provider, err := c.Provider(ctx)
+	provider, err := oidc.NewProvider(ctx, providerUrl)
 	if err != nil {
 		return nil, err
 	}
 	cfg := oauth2.Config{
-		ClientID:     c.clientID,
-		ClientSecret: c.clientSecret,
-		RedirectURL:  c.redirectURL,
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		RedirectURL:  redirectURL,
 
 		// Discovery returns the OAuth2 endpoints.
 		Endpoint: provider.Endpoint(),
 
-		Scopes: c.scopes,
+		Scopes: scopes,
 	}
-	c.oauthConfig = &cfg
 
-	return &cfg, nil
+	return &Client{provider, cfg, sessionService, true, true, true}, nil
 }
 
-func (c *Client) UserInfoEndpoint(ctx context.Context) (string, error) {
-	provider, err := c.Provider(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	return provider.UserInfoEndpoint(), nil
+func (c *Client) UserInfoEndpoint() string {
+	return c.provider.UserInfoEndpoint()
 }
 
 func (c *Client) SetNeedToVerifyState(needToVerifyState bool) {
@@ -155,12 +109,7 @@ func (c *Client) RedirectURL(ctx *web.Context) (string, error) {
 		}
 	}
 
-	oauthConfig, err := c.OAuth2Config(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	return oauthConfig.AuthCodeURL(
+	return c.oauthConfig.AuthCodeURL(
 		state,
 		authCodeOptions...,
 	), nil
@@ -180,11 +129,7 @@ func (c *Client) ExchangeCodeForToken(ctx *web.Context, code string, state strin
 		authCodeOptions = append(authCodeOptions, oauth2.VerifierOption(codeVerifier))
 	}
 
-	oauthConfig, err := c.OAuth2Config(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-	token, err := oauthConfig.Exchange(ctx, code, authCodeOptions...)
+	token, err := c.oauthConfig.Exchange(ctx, code, authCodeOptions...)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to exchange code: %w", err)
 	}
@@ -210,16 +155,8 @@ func (c *Client) ExchangeCodeForToken(ctx *web.Context, code string, state strin
 }
 
 func (c *Client) parseAndVerifyIDToken(ctx context.Context, rawIDToken string) (*oidc.IDToken, error) {
-	provider, err := c.Provider(ctx)
-	if err != nil {
-		return nil, err
-	}
-	oauthConfig, err := c.OAuth2Config(ctx)
-	if err != nil {
-		return nil, err
-	}
 	// Parse and verify ID Token payload.
-	var verifier = provider.Verifier(&oidc.Config{ClientID: oauthConfig.ClientID})
+	var verifier = c.provider.Verifier(&oidc.Config{ClientID: c.oauthConfig.ClientID})
 	parsed, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
 		return nil, ErrInvalidIdToken
@@ -229,11 +166,7 @@ func (c *Client) parseAndVerifyIDToken(ctx context.Context, rawIDToken string) (
 }
 
 func (c *Client) UserInfo(ctx context.Context, t *oauth2.Token) (*oidc.UserInfo, error) {
-	provider, err := c.Provider(ctx)
-	if err != nil {
-		return nil, err
-	}
-	userInfo, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(t))
+	userInfo, err := c.provider.UserInfo(ctx, oauth2.StaticTokenSource(t))
 	if err != nil {
 		return nil, ErrRetrieveUserInfo
 	}
@@ -245,11 +178,7 @@ func (c *Client) RPInitiatedLogout(ctx *web.Context, postLogoutRedirectURI strin
 	var claims struct {
 		EndSessionEndpoint string `json:"end_session_endpoint"`
 	}
-	provider, err := c.Provider(ctx)
-	if err != nil {
-		return "", err
-	}
-	if err := provider.Claims(&claims); err != nil {
+	if err := c.provider.Claims(&claims); err != nil {
 		return "", fmt.Errorf("rp initiated logout: get provider claims: %w", err)
 	}
 	endSessionEndpoint := claims.EndSessionEndpoint
