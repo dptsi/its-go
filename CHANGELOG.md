@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.1](https://github.com/dptsi/its-go/compare/v1.6.0...v1.6.1) (2024-06-24)
+
+
+### Bug Fixes
+
+* **oidc:** calling oidc endpoints taking too long ([8d43c42](https://github.com/dptsi/its-go/commit/8d43c42728dd56e961ed66af4a7168a775e93c1d))
+
 ## [1.6.0](https://github.com/dptsi/its-go/compare/v1.5.5...v1.6.0) (2024-06-12)
 
 
