@@ -46,7 +46,7 @@ func (r *InfiniteScrollResult[T]) GetInfiniteScrollResponse(urlConfig UrlConfig,
 		Code:    http.StatusOK,
 		Message: "success",
 		Links: InfiniteScrollLinks{
-			Next: fmt.Sprintf("%s?%s", urlConfig.FullUrl(), urlConfig.Query.Encode()),
+			Next: fmt.Sprintf("%s?%s", urlConfig.Path, urlConfig.Query.Encode()),
 		},
 		Meta: InfiniteScrollMeta{
 			Total: r.Total,

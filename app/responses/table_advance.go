@@ -45,8 +45,8 @@ func (r *TableAdvancedResult[T]) GetTableAdvancedResponse(urlConfig UrlConfig, l
 		Code:    http.StatusOK,
 		Message: "success",
 		Links: TableAdvancedLinks{
-			Prev: fmt.Sprintf("%s?end_before=%s&page=%d", urlConfig.FullUrl(), r.EndBefore, max(1, currentPage-1)),
-			Next: fmt.Sprintf("%s?start_after=%s&page=%d", urlConfig.FullUrl(), r.StartAfter, min(r.Total/limit+1, currentPage+1)),
+			Prev: fmt.Sprintf("%s?end_before=%s&page=%d", urlConfig.Path, r.EndBefore, max(1, currentPage-1)),
+			Next: fmt.Sprintf("%s?start_after=%s&page=%d", urlConfig.Path, r.StartAfter, min(r.Total/limit+1, currentPage+1)),
 		},
 		Meta: TableAdvancedMeta{
 			Total: r.Total,
