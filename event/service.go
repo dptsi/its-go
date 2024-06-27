@@ -21,7 +21,8 @@ func NewService(application contracts.Application) *Service {
 	}
 }
 
-func (s *Service) Dispatch(ctx context.Context, name string, payload contracts.Event) {
+func (s *Service) Dispatch(ctx context.Context, payload contracts.Event) {
+	name := payload.Name()
 	listenerCount, exists := s.listenersCount[name]
 	if !exists {
 		// log.Printf("event service: dispatch: event name %s is not found", name)
@@ -50,7 +51,7 @@ func (s *Service) Register(name string, listenersConstructor []contracts.EventLi
 	s.listenersCount[name] = len(listenersConstructor)
 
 	for i, constructor := range listenersConstructor {
-		app.Bind[contracts.EventListener](
+		app.Bind(
 			s.application,
 			s.getListenerServiceKey(name, i),
 			constructor,

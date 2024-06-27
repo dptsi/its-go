@@ -11,6 +11,7 @@ import (
 // References:
 //  1. Implementing Domain-Driven Design, Vaughn Vernon
 type Event interface {
+	Name() string
 	OccuredOn() time.Time
 	JSON() ([]byte, error)
 }
@@ -23,6 +24,6 @@ type EventListener interface {
 type EventListenerConstructor = func(application Application) (EventListener, error)
 
 type EventService interface {
-	Dispatch(ctx context.Context, name string, payload Event)
+	Dispatch(ctx context.Context, payload Event)
 	Register(name string, listenersConstructor []EventListenerConstructor)
 }
