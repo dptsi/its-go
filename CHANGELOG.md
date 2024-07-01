@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.8.1](https://github.com/dptsi/its-go/compare/v1.8.0...v1.8.1) (2024-07-01)
+
+
+### Bug Fixes
+
+* **event:** missing error feedback ([602c0b8](https://github.com/dptsi/its-go/commit/602c0b8425f7a377e1fe9d660fac0c3f0372e883))
+
 ## [1.8.0](https://github.com/dptsi/its-go/compare/v1.7.1...v1.8.0) (2024-07-01)
 
 
