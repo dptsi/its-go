@@ -2,6 +2,7 @@
   "name": "its-go",
   "version": "1.7.1",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "release": "commit-and-tag-version"
   },
