@@ -26,4 +26,5 @@ type Application interface {
 	ListProvidedServices() []string
 	Injector() *do.Injector
 	Services() ApplicationServices
+	Shutdown() error
 }

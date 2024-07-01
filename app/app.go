@@ -59,6 +59,10 @@ func (app *Application) Injector() *do.Injector {
 	return app.i
 }
 
+func (app *Application) Shutdown() error {
+	return app.i.Shutdown()
+}
+
 func (app *Application) Services() contracts.ApplicationServices {
 	return contracts.ApplicationServices{
 		Auth:        MustMake[contracts.AuthService](app, "auth.service"),
