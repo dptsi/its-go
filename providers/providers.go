@@ -1,7 +1,6 @@
 package providers
 
 import (
-	"encoding/base64"
 	"fmt"
 
 	"cloud.google.com/go/firestore"
@@ -9,7 +8,6 @@ import (
 	"github.com/dptsi/its-go/app"
 	"github.com/dptsi/its-go/auth"
 	"github.com/dptsi/its-go/contracts"
-	"github.com/dptsi/its-go/crypt"
 	"github.com/dptsi/its-go/database"
 	"github.com/dptsi/its-go/event"
 	_firestore "github.com/dptsi/its-go/firestore"
@@ -23,10 +21,10 @@ import (
 
 func LoadProviders(application contracts.Application) error {
 	config := application.Config()
-	cryptConfig, ok := config["crypt"].(crypt.Config)
-	if !ok {
-		return fmt.Errorf("crypt config is not available")
-	}
+	// cryptConfig, ok := config["crypt"].(crypt.Config)
+	// if !ok {
+	// 	return fmt.Errorf("crypt config is not available")
+	// }
 	dbConfig, ok := config["database"].(database.Config)
 	if !ok {
 		return fmt.Errorf("database config is not available")
@@ -88,15 +86,16 @@ func LoadProviders(application contracts.Application) error {
 
 	// log.Println("Registering encryption service...")
 	app.Bind(application, "crypt.service", func(application contracts.Application) (contracts.CryptService, error) {
-		key, err := base64.StdEncoding.DecodeString(cryptConfig.Key)
-		if err != nil {
-			return nil, err
-		}
-		if len([]byte(key)) != 32 {
-			return nil, fmt.Errorf("key length must be 32 bytes. generate key using `go run script/script.go key:generate`")
-		}
+		// key, err := base64.StdEncoding.DecodeString(cryptConfig.Key)
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// if len([]byte(key)) != 32 {
+		// 	return nil, fmt.Errorf("key length must be 32 bytes. generate key using `go run script/script.go key:generate`")
+		// }
 
-		return crypt.NewAesGcmEncryptionService(key)
+		return nil, nil
+		// return crypt.NewAesGcmEncryptionService(key)
 	})
 	// log.Println("Encryption service registered!")
 
