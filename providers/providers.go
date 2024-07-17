@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"cloud.google.com/go/firestore"
 	"github.com/dptsi/its-go/activitylog"
 	"github.com/dptsi/its-go/app"
 	"github.com/dptsi/its-go/auth"
@@ -11,6 +12,7 @@ import (
 	"github.com/dptsi/its-go/crypt"
 	"github.com/dptsi/its-go/database"
 	"github.com/dptsi/its-go/event"
+	_firestore "github.com/dptsi/its-go/firestore"
 	"github.com/dptsi/its-go/http/middleware"
 	"github.com/dptsi/its-go/logging"
 	"github.com/dptsi/its-go/module"
@@ -45,6 +47,15 @@ func LoadProviders(application contracts.Application) error {
 	if !ok {
 		return fmt.Errorf("web config is not available")
 	}
+
+	// log.Println("Registering firestore client...")
+	app.Bind(application, "firestore.client", func(application contracts.Application) (*firestore.Client, error) {
+		config, ok := config["firestore"].(_firestore.Config)
+		if !ok {
+			return nil, fmt.Errorf("firestore config is not available")
+		}
+		return firestore.NewClient(application.Context(), config.ProjectId)
+	})
 
 	app.Bind(application, "activity_log.service", func(application contracts.Application) (contracts.ActivityLogService, error) {
 		logger := app.MustMake[contracts.LoggingService](application, "logging.service")
@@ -108,6 +119,10 @@ func LoadProviders(application contracts.Application) error {
 	app.Bind(application, "sessions.storage.database", func(a contracts.Application) (contracts.SessionStorage, error) {
 		db := app.MustMake[contracts.DatabaseService](application, "database.service").GetDefault()
 		return storage.NewDatabase(db, sessionsConfig.Table, sessionsConfig.AutoMigrate), nil
+	})
+	app.Bind(application, "sessions.storage.firestore", func(a contracts.Application) (contracts.SessionStorage, error) {
+		client := app.MustMake[*firestore.Client](application, "firestore.client")
+		return storage.NewFirestore(client, sessionsConfig.Table), nil
 	})
 	app.Bind(application, "sessions.service", func(application contracts.Application) (contracts.SessionService, error) {
 		writer := app.MustMake[contracts.SessionCookieWriter](application, "sessions.cookie_writer")

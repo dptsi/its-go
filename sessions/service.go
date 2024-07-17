@@ -26,7 +26,7 @@ type CookieConfig struct {
 
 type Config struct {
 	// Default Session Storage
-	// Supported: "database"
+	// Supported: "database", "firestore"
 	Storage string
 
 	// Database connection
