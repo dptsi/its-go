@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.0](https://github.com/dptsi/its-go/compare/v1.8.1...v1.9.0) (2024-07-17)
+
+
+### Features
+
+* **firestore:** add firestore service ([d98ba73](https://github.com/dptsi/its-go/commit/d98ba73d4f0e343f2042506fd18146eed33b29ce))
+
 ## [1.8.1](https://github.com/dptsi/its-go/compare/v1.8.0...v1.8.1) (2024-07-01)
 
 
