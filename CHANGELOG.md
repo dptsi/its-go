@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.1](https://github.com/dptsi/its-go/compare/v1.9.0...v1.9.1) (2024-09-19)
+
 ## [1.9.0](https://github.com/dptsi/its-go/compare/v1.8.1...v1.9.0) (2024-07-17)
 
 
