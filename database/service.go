@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strings"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -72,7 +73,19 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		// log.Println("Successfully connected to SQL Server database!")
 		return db, nil
 	case "postgres":
-		dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
+		params := []string{
+			fmt.Sprintf("host=%s", cfg.Host),
+			fmt.Sprintf("user=%s", cfg.User),
+			fmt.Sprintf("password=%s", cfg.Password),
+			fmt.Sprintf("dbname=%s", cfg.Database),
+			"sslmode=disable",
+		}
+
+		if cfg.Port != "" {
+			params = append(params, fmt.Sprintf("port=%s", cfg.Port))
+		}
+
+		dsn := strings.Join(params, " ")
 		// log.Println("Connecting to PostgreSQL database...")
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
