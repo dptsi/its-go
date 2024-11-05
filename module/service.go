@@ -1,7 +1,7 @@
 package module
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/dptsi/its-go/contracts"
 )
@@ -9,15 +9,16 @@ import (
 type Service struct {
 	application contracts.Application
 	modules     map[string]bool
+	logger      contracts.LoggingService
 }
 
-func NewService(application contracts.Application) *Service {
-	return &Service{application, make(map[string]bool)}
+func NewService(application contracts.Application, logger contracts.LoggingService) *Service {
+	return &Service{application, make(map[string]bool), logger}
 }
 
 func (s *Service) Register(name string, entrypoint contracts.ModuleEntrypoint) {
 	if _, exists := s.modules[name]; exists {
-		log.Fatalf("module with name %s already exists", name)
+		s.logger.Warning(s.application.Context(), fmt.Sprintf("module with name %s already exists", name))
 	}
 	s.modules[name] = true
 

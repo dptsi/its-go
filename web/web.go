@@ -18,7 +18,7 @@ type Config struct {
 	Port        string
 }
 
-func SetupEngine(cfg Config) (*Engine, error) {
+func SetupEngine(logger ErrorLogger, cfg Config) (*Engine, error) {
 	if cfg.IsDebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -69,8 +69,7 @@ func SetupEngine(cfg Config) (*Engine, error) {
 			"data":    data,
 		})
 	}))
-	r.Use(globalErrorHandler(cfg.IsDebugMode))
+	r.Use(globalErrorHandler(logger, cfg.IsDebugMode))
 
-	// log.Println("Gin server successfully set up!")
 	return r, nil
 }

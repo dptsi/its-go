@@ -2,6 +2,7 @@ package providers
 
 import (
 	"fmt"
+	"log"
 
 	"cloud.google.com/go/firestore"
 	"github.com/dptsi/its-go/activitylog"
@@ -29,10 +30,6 @@ func LoadProviders(application contracts.Application) error {
 	if !ok {
 		return fmt.Errorf("database config is not available")
 	}
-	loggingConfig, ok := config["logging"].(logging.Config)
-	if !ok {
-		return fmt.Errorf("logging config is not available")
-	}
 	middlewareConfig, ok := config["middleware"].(middleware.Config)
 	if !ok {
 		return fmt.Errorf("middleware config is not available")
@@ -46,7 +43,6 @@ func LoadProviders(application contracts.Application) error {
 		return fmt.Errorf("web config is not available")
 	}
 
-	// log.Println("Registering firestore client...")
 	app.Bind(application, "firestore.client", func(application contracts.Application) (*firestore.Client, error) {
 		config, ok := config["firestore"].(_firestore.Config)
 		if !ok {
@@ -60,31 +56,23 @@ func LoadProviders(application contracts.Application) error {
 		return activitylog.NewService(logger), nil
 	})
 
-	// log.Println("Registering authentication service...")
 	app.Bind(application, "auth.service", func(application contracts.Application) (contracts.AuthService, error) {
 		return auth.NewService(application), nil
 	})
-	// log.Println("Authentication service registered!")
 
-	// log.Println("Registering event service...")
 	app.Bind(application, "event.service", func(application contracts.Application) (contracts.EventService, error) {
-		return event.NewService(application), nil
+		logger := app.MustMake[contracts.LoggingService](application, "logging.service")
+		return event.NewService(application, logger), nil
 	})
-	// log.Println("Event service registered!")
 
-	// log.Println("Registering database service...")
 	app.Bind(application, "database.service", func(application contracts.Application) (contracts.DatabaseService, error) {
 		return database.NewService(dbConfig)
 	})
-	// log.Println("Database service registered!")
 
-	// log.Println("Registering logging service...")
 	app.Bind(application, "logging.service", func(application contracts.Application) (contracts.LoggingService, error) {
-		return logging.NewService(application, loggingConfig), nil
+		return logging.NewGoLogger(log.Default()), nil
 	})
-	// log.Println("Logging service registered!")
 
-	// log.Println("Registering encryption service...")
 	app.Bind(application, "crypt.service", func(application contracts.Application) (contracts.CryptService, error) {
 		// key, err := base64.StdEncoding.DecodeString(cryptConfig.Key)
 		// if err != nil {
@@ -97,21 +85,16 @@ func LoadProviders(application contracts.Application) error {
 		return nil, nil
 		// return crypt.NewAesGcmEncryptionService(key)
 	})
-	// log.Println("Encryption service registered!")
 
-	// log.Println("Registering middleware service...")
 	app.Bind(application, "http.middleware.service", func(a contracts.Application) (contracts.MiddlewareService, error) {
 		return middleware.NewService(application, middlewareConfig), nil
 	})
-	// log.Println("Middleware service registered!")
 
-	// log.Println("Registering module service...")
 	app.Bind(application, "module.service", func(application contracts.Application) (contracts.ModuleService, error) {
-		return module.NewService(application), nil
+		logger := app.MustMake[contracts.LoggingService](application, "logging.service")
+		return module.NewService(application, logger), nil
 	})
-	// log.Println("Module service registered!")
 
-	// log.Println("Registering sessions service...")
 	app.Bind(application, "sessions.cookie_writer", func(application contracts.Application) (contracts.SessionCookieWriter, error) {
 		return sessions.NewCookieUtil(sessionsConfig.Cookie), nil
 	})
@@ -140,23 +123,18 @@ func LoadProviders(application contracts.Application) error {
 
 		return service, err
 	})
-	// log.Println("Session service registered!")
 
-	// log.Println("Registering web server...")
 	app.Bind(application, "web.engine", func(a contracts.Application) (*web.Engine, error) {
-		engine, err := web.SetupEngine(webConfig)
+		loggingService := app.MustMake[contracts.LoggingService](application, "logging.service")
+		engine, err := web.SetupEngine(loggingService, webConfig)
 		if err != nil {
 			return nil, err
 		}
 
 		return engine, nil
 	})
-	// log.Println("Web server registered!")
 
 	if err := registerAuthGuard(application); err != nil {
-		return err
-	}
-	if err := registerLogger(application); err != nil {
 		return err
 	}
 	if err := registerMiddlewares(application); err != nil {

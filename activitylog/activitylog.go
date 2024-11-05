@@ -1,6 +1,9 @@
 package activitylog
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/models"
 )
@@ -51,18 +54,10 @@ func (s *Service) Builder() contracts.ActivityLogBuilder {
 	return s.builder
 }
 
-func (s *Service) Log(activity contracts.Activity, action string) {
+func (s *Service) Log(ctx context.Context, activity contracts.Activity, action string) error {
 	if activity.ImpersonatorUserId() != nil {
-		s.logger.Info("{{.Causer}} impersonated by {{.Impersonator}} executed action {{.Action}}", map[string]interface{}{
-			"Action":       action,
-			"Causer":       activity.CauserUserId(),
-			"Impersonator": *activity.ImpersonatorUserId(),
-		})
-		return
+		return s.logger.Info(ctx, fmt.Sprintf("%s impersonated by %s executed action %s", activity.CauserUserId(), *activity.ImpersonatorUserId(), action))
 	}
 
-	s.logger.Info("{{.Causer}} executed action {{.Action}}", map[string]interface{}{
-		"Causer": activity.CauserUserId(),
-		"Action": action,
-	})
+	return s.logger.Info(ctx, fmt.Sprintf("%s executed action %s", activity.CauserUserId(), action))
 }

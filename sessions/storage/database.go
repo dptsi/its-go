@@ -25,9 +25,7 @@ type Database struct {
 
 func NewDatabase(db *database.Database, table string, autoMigrate bool) *Database {
 	if autoMigrate {
-		// log.Printf("Auto migrate sessions table with name %s", table)
 		db.Table(table).AutoMigrate(&DatabaseData{})
-		// log.Printf("Table %s successfully migrated", table)
 	}
 	return &Database{db, table}
 }

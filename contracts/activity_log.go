@@ -1,6 +1,10 @@
 package contracts
 
-import "github.com/dptsi/its-go/models"
+import (
+	"context"
+
+	"github.com/dptsi/its-go/models"
+)
 
 type Activity interface {
 	CauserUserId() string
@@ -13,6 +17,6 @@ type ActivityLogBuilder interface {
 }
 
 type ActivityLogService interface {
-	Log(activity Activity, action string)
+	Log(ctx context.Context, activity Activity, action string) error
 	Builder() ActivityLogBuilder
 }
