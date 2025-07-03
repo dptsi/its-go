@@ -1,5 +1,6 @@
 package firestore
 
 type Config struct {
-	ProjectId string
+	ProjectId  string
+	DatabaseId string
 }

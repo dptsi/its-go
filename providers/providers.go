@@ -48,6 +48,10 @@ func LoadProviders(application contracts.Application) error {
 		if !ok {
 			return nil, fmt.Errorf("firestore config is not available")
 		}
+		if config.DatabaseId != "" {
+			return firestore.NewClientWithDatabase(application.Context(), config.ProjectId, config.DatabaseId)
+		}
+
 		return firestore.NewClient(application.Context(), config.ProjectId)
 	})
 
