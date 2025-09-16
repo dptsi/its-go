@@ -59,7 +59,7 @@ func (s *Service) GetTimeoutGin() time.Duration {
 }
 
 func (s *Service) MustWaitForDeliveryGin() bool {
-	return s.MustWaitForDeliveryGin()
+	return s.config.GinWaitForDelivery
 }
 
 func loadConfigFromEnv() (*contracts.SentryConfig, error) {
