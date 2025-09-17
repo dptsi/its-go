@@ -43,5 +43,16 @@ func registerMiddlewares(application contracts.Application) error {
 		)
 	})
 
+	/**
+	 * register sentry middleware regardless of whether sentry is enabled or not.
+	 * in some cases, sentry may be disabled on env, but still registered as
+	 * global middleware by other codebase that use or inherit this repository.
+	 * if env states that sentry is disabled, but it is still registered as global middleware,
+	 * the code will throw an error due to missing provider for the sentry middleware.
+	 */
+	service.Register("sentry", func(application contracts.Application) (contracts.Middleware, error) {
+		return middleware.NewSentryGin(app.MustMake[contracts.SentryService](application, "sentry.service"))
+	})
+
 	return nil
 }
