@@ -75,7 +75,7 @@ func loadConfigFromEnv() (*contracts.SentryConfig, error) {
 	if err != nil {
 		debug = false
 	}
-	// set enabled status before any error happens
+	// set debug status before any error happens
 	cfg.Debug = debug
 
 	dsn := os.Getenv("SENTRY_DSN")
