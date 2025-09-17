@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/go-playground/validator/v10"
 
 	commonErrors "github.com/dptsi/its-go/app/errors"
@@ -133,6 +134,14 @@ func globalErrorHandler(logger ErrorLogger, isDebugMode bool) HandlerFunc {
 				},
 			)
 		}
+
+		// sentry-go will automatically detect if
+		// sentry is initialized or not.
+		// if not initialized, this does nothing.
+		defer sentry.CaptureException(err)
+		// panic does not go to this middleware,
+		// it goes straight to a recovery middleware,
+		// which is a separate middleware.
 
 		ctx.Abort()
 	}
