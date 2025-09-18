@@ -12,6 +12,7 @@ import (
 
 type UserSessionData struct {
 	Id                string        `json:"id"`
+	RegId             string        `json:"reg_id"`
 	Name              string        `json:"name"`
 	PreferredUsername string        `json:"preferred_username"`
 	Email             string        `json:"email"`

@@ -22,6 +22,7 @@ type Role struct {
 
 type User struct {
 	id                 string
+	regId              string
 	name               string
 	preferred_username string
 	email              string
@@ -41,6 +42,14 @@ func NewUser(id string) *User {
 
 func (u *User) Id() string {
 	return u.id
+}
+
+func (u *User) RegId() string {
+	return u.regId
+}
+
+func (u *User) SetRegId(regId string) {
+	u.regId = regId
 }
 
 func (u *User) Name() string {
