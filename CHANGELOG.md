@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [1.9.4](https://github.com/dptsi/its-go/compare/v1.9.2...v1.9.3) (2025-07-03)
+## [1.9.5](https://github.com/dptsi/its-go/compare/v1.9.4...v1.9.5) (2025-07-03)
+
+
+### Bug Fixes
+
+* fix adding reg_id to user model ([64d9ee2](https://github.com/dptsi/its-go/commit/64d9ee26afc084ac656f4c4c5694728976a7b7bb))
+
+## [1.9.4](https://github.com/dptsi/its-go/compare/v1.9.3...v1.9.4) (2025-07-03)
 
 
 ### Features
