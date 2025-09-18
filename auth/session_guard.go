@@ -74,6 +74,7 @@ func (g *SessionGuard) User(ctx *web.Context) *models.User {
 	user.SetName(userData.Name)
 	user.SetPreferredUsername(userData.PreferredUsername)
 	user.SetPicture(userData.Picture)
+	user.SetRegId(userData.RegId)
 	user.SetImpersonatorId(userData.ImpersonatorId)
 	for _, role := range userData.Roles {
 		user.AddRole(role.Id, role.Name, role.Permissions, role.IsDefault, role.UnitOrganizations)
@@ -108,6 +109,7 @@ func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) error 
 		userSessionData := UserSessionData{
 			Id:                strings.ToLower(user.Id()),
 			Name:              user.Name(),
+			RegId:             user.RegId(),
 			PreferredUsername: user.PreferredUsername(),
 			Email:             user.Email(),
 			Phone:             user.Phone(),

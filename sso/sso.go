@@ -52,7 +52,7 @@ type userInfoRaw struct {
 	Roles             []Role       `json:"role"`
 	Resource          interface{}  `json:"resource"`
 	OriginalUserId    *string      `json:"original_user_id"`
-	RegId             *string      `json:"reg_id"`
+	RegId             string       `json:"reg_id"`
 }
 
 type Roles map[string]Role
@@ -115,6 +115,7 @@ func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state 
 	}
 
 	user := models.NewUser(userInfo.Sub)
+	user.SetRegId(userInfo.RegId)
 	user.SetName(userInfo.Name)
 	user.SetPreferredUsername(userInfo.PreferredUsername)
 	user.SetEmail(userInfo.Email)
