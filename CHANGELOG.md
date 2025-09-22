@@ -2,14 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [1.9.5](https://github.com/dptsi/its-go/compare/v1.9.4...v1.9.5) (2025-07-03)
+## [1.9.6](https://github.com/dptsi/its-go/compare/v1.9.5...v1.9.6) (2025-09-22)
+
+
+### Features
+
+* integrate Sentry for error tracking ([af1f13a](https://github.com/dptsi/its-go/commit/af1f13a4dfb8c5ee037e7af6a9523e38bbd126ae))
+
+## [1.9.5](https://github.com/dptsi/its-go/compare/v1.9.4...v1.9.5) (2025-09-18)
 
 
 ### Bug Fixes
 
 * fix adding reg_id to user model ([64d9ee2](https://github.com/dptsi/its-go/commit/64d9ee26afc084ac656f4c4c5694728976a7b7bb))
 
-## [1.9.4](https://github.com/dptsi/its-go/compare/v1.9.3...v1.9.4) (2025-07-03)
+## [1.9.4](https://github.com/dptsi/its-go/compare/v1.9.3...v1.9.4) (2025-09-18)
 
 
 ### Features
