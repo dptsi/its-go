@@ -15,6 +15,7 @@ import (
 	"github.com/dptsi/its-go/http/middleware"
 	"github.com/dptsi/its-go/logging"
 	"github.com/dptsi/its-go/module"
+	"github.com/dptsi/its-go/sentry"
 	"github.com/dptsi/its-go/sessions"
 	"github.com/dptsi/its-go/sessions/storage"
 	"github.com/dptsi/its-go/web"
@@ -126,6 +127,10 @@ func LoadProviders(application contracts.Application) error {
 		)
 
 		return service, err
+	})
+
+	app.Bind(application, "sentry.service", func(application contracts.Application) (contracts.SentryService, error) {
+		return sentry.NewService(application)
 	})
 
 	app.Bind(application, "web.engine", func(a contracts.Application) (*web.Engine, error) {
