@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.7](https://github.com/dptsi/its-go/compare/v1.9.6...v1.9.7) (2025-09-23)
+
+
+### Features
+
+* Use Sentry Hub from `sentrygin` to Allow Event Enrichments ([556f30d](https://github.com/dptsi/its-go/commit/556f30d8fe77751c25b5b2a7cb4c7d2e0d758d4b))
+
 ## [1.9.6](https://github.com/dptsi/its-go/compare/v1.9.5...v1.9.6) (2025-09-22)
 
 
