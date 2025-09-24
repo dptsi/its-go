@@ -143,13 +143,13 @@ func globalErrorHandler(logger ErrorLogger, isDebugMode bool) HandlerFunc {
 					// so that error is shown along with request path in sentry issue GUI
 					// (at issues overview)
 					event.Transaction = ctx.Request.URL.Path
-					// default per sentry-go v0.35.1, if event.Transaction is empty,
+
+					// default per sentry-go v0.35.1, if event.Fingerprint is not modified,
 					// error is grouped to this its-go module
 					// because there's no stack trace available on the
 					// error (err) instance, or pointed to code
 					// that gives error if stack trace is available.
-
-					// so that error is grouped per path in sentry issue GUI
+					// so that error is also grouped per path in sentry issue GUI:
 					event.Fingerprint = []string{"{{ default }}", ctx.Request.URL.Path}
 					return event
 				})
