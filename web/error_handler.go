@@ -140,13 +140,17 @@ func globalErrorHandler(logger ErrorLogger, isDebugMode bool) HandlerFunc {
 		if sentryhub := sentrygin.GetHubFromContext(ctx); sentryhub != nil {
 			sentryhub.WithScope(func(scope *sentry.Scope) {
 				scope.AddEventProcessor(func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
-					// so that error is grouped per path in sentry issue GUI
+					// so that error is shown along with request path in sentry issue GUI
+					// (at issues overview)
 					event.Transaction = ctx.Request.URL.Path
 					// default per sentry-go v0.35.1, if event.Transaction is empty,
 					// error is grouped to this its-go module
 					// because there's no stack trace available on the
 					// error (err) instance, or pointed to code
 					// that gives error if stack trace is available.
+
+					// so that error is grouped per path in sentry issue GUI
+					event.Fingerprint = []string{"{{ default }}", ctx.Request.URL.Path}
 					return event
 				})
 				defer sentryhub.CaptureException(errors.Unwrap(err))
