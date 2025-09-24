@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/go-playground/validator/v10"
 
@@ -136,9 +137,20 @@ func globalErrorHandler(logger ErrorLogger, isDebugMode bool) HandlerFunc {
 		}
 
 		// if sentry or sentrygin is disabled, this does nothing.
-		sentryhub := sentrygin.GetHubFromContext(ctx)
-		if sentryhub != nil {
-			defer sentryhub.CaptureException(err)
+		if sentryhub := sentrygin.GetHubFromContext(ctx); sentryhub != nil {
+			sentryhub.WithScope(func(scope *sentry.Scope) {
+				scope.AddEventProcessor(func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+					// so that error is grouped per path in sentry issue GUI
+					event.Transaction = ctx.Request.URL.Path
+					// default per sentry-go v0.35.1, if event.Transaction is empty,
+					// error is grouped to this its-go module
+					// because there's no stack trace available on the
+					// error (err) instance, or pointed to code
+					// that gives error if stack trace is available.
+					return event
+				})
+				defer sentryhub.CaptureException(errors.Unwrap(err))
+			})
 		}
 		// panic does not go to this middleware,
 		// it goes straight to a recovery middleware,
