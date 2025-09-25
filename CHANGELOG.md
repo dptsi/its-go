@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.8](https://github.com/dptsi/its-go/compare/v1.9.7...v1.9.8) (2025-09-25)
+
+
+### Features
+
+* Group sentry transaction by path ([dc3fd21](https://github.com/dptsi/its-go/commit/dc3fd2159142a8ad51ae259a13cd80748ced58a5))
+
 ## [1.9.7](https://github.com/dptsi/its-go/compare/v1.9.6...v1.9.7) (2025-09-23)
 
 
