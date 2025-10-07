@@ -18,9 +18,9 @@ type stringAsBool bool
 
 func (sb *stringAsBool) UnmarshalJSON(b []byte) error {
 	switch string(b) {
-	case "1", `"1"`:
+	case "1", `"1"`, "true", `"true"`:
 		*sb = true
-	case "0", `"0"`:
+	case "0", `"0"`, "false", `"false"`:
 		*sb = false
 	default:
 		return errors.New("invalid value for boolean")
