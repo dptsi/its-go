@@ -23,6 +23,7 @@ type ConnectionConfig struct {
 	Host     string
 	Port     string
 	Database string
+	Timezone string // add this field
 }
 
 type Config struct {
@@ -52,6 +53,11 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		return nil, fmt.Errorf("database driver is empty, supported drivers are [sqlite, sqlserver, postgres]")
 	}
 
+	// set default timezone if not provided
+	if cfg.Timezone == "" {
+		cfg.Timezone = "Asia/Jakarta"
+	}
+
 	switch cfg.Driver {
 	case "sqlite":
 		// Contoh penggunaan adapter GORM dengan SQLite
@@ -61,7 +67,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		}
 		return db, nil
 	case "sqlserver":
-		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
+		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s&timezone=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.Timezone)
 		db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 		if err != nil {
 			return nil, fmt.Errorf("SQL Server connection error: %w", err)
@@ -73,6 +79,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 			fmt.Sprintf("user=%s", cfg.User),
 			fmt.Sprintf("password=%s", cfg.Password),
 			fmt.Sprintf("dbname=%s", cfg.Database),
+			fmt.Sprintf("TimeZone=%s", cfg.Timezone),
 			"sslmode=disable",
 		}
 
