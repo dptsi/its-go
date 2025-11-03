@@ -23,7 +23,7 @@ type ConnectionConfig struct {
 	Host     string
 	Port     string
 	Database string
-	Timezone string // add this field
+	Timezone string
 }
 
 type Config struct {
@@ -67,7 +67,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		}
 		return db, nil
 	case "sqlserver":
-		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s&timezone=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.Timezone)
+		dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 		db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 		if err != nil {
 			return nil, fmt.Errorf("SQL Server connection error: %w", err)
