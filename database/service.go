@@ -95,8 +95,9 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		}
 		return db, nil
 	case "sqlserver":
-		// https://pkg.go.dev/github.com/microsoft/go-mssqldb@v1.6.0#section-readme
 		/**
+		https://pkg.go.dev/github.com/microsoft/go-mssqldb@v1.6.0#section-readme
+
 		encrypt
 			strict - Data sent between client and server is encrypted E2E using TDS8.
 			disable - Data send between client and server is not encrypted.
@@ -109,26 +110,46 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 				   certificate is true, driver accepts any certificate presented by the server and any host name in that
 				   certificate. In this mode, TLS is susceptible to man-in-the-middle attacks. This should be used only for testing.
 		*/
+		/**
+		(comment id: its-go/database/service.go-1)
+		in the making of this encrypt configuration that works between mssql and
+		postgresql, we decided that on sqlserver the usage definiton of "disabled"
+		and "false" is confusing. as above, "disable" is defined as "Data send
+		between client and server is not encrypted", while "false" is "Data sent
+		between client and server is not encrypted [[beyond the login packet]].".
+		the consequences of using "false" instead of "disable" is you may get
+		tls cert verify error like below:
+
+		...
+		[error] failed to initialize database, got error TLS Handshake
+		failed: tls: failed to verify certificate: x509: cannot validate
+		certificate for (db ip/host) because it doesn't contain any IP SANs
+		...
+
+		(comment id: its-go/database/service.go-1-2)
+		"[[beyond the login packet]]" implies there's transport encryption that
+		is enabled at login. if you specify TransportEncrypt as either "false"
+		or "login-only", and you get tls handshake verify certificate error,
+		make sure to configure TrustServerCertificate as "true".
+		*/
 		transportEncrypt := ""
 		switch cfg.TransportEncrypt {
-		case "enable", "enabled", "strict", "true", "mandatory", "yes", "1", "t", "optional":
-			if cfg.TransportEncrypt == "enable" || cfg.TransportEncrypt == "enabled" {
-				transportEncrypt = "&encrypt=true"
-				break
-			}
+		case "enable", "enabled":
+			transportEncrypt = "&encrypt=true"
+		case "strict", "true", "mandatory", "yes", "1", "t", "optional", "disable", "false", "no", "0", "f":
 			transportEncrypt = fmt.Sprintf("&encrypt=%s", cfg.TransportEncrypt)
-		case "disable", "disabled", "false", "no", "0", "f":
-			if cfg.TransportEncrypt == "disabled" {
-				transportEncrypt = "&encrypt=false"
-				break
-			}
-			transportEncrypt = fmt.Sprintf("&encrypt=%s", cfg.TransportEncrypt)
+		case "disabled":
+			// refer to comment id its-go/database/service.go-1
+			transportEncrypt = "&encrypt=disable"
+		case "login-only":
+			// refer to comment id its-go/database/service.go-1-2
+			transportEncrypt = "&encrypt=false"
 		default:
 			return nil, fmt.Errorf("invalid database TransportEncrypt configuration: %s", cfg.TransportEncrypt)
 		}
 
 		dsn := fmt.Sprintf(
-			"sqlserver://%s:%s@%s:%s?database=%s%s%s",
+			"sqlserver://%s:%s@%s:%s?database=%s%s&trustservercertificate=%s",
 			cfg.User,
 			cfg.Password,
 			cfg.Host,
