@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.10](https://github.com/dptsi/its-go/compare/v1.9.9...v1.9.10) (2025-09-25)
+
+
+### Features
+
+* feat(database): add timezone support for database drivers ([1793139](https://github.com/dptsi/its-go/commit/17931398d3efcb102a0463b0ccfc30034c784ade))
+* Add Database Transport Encrypt Option and Configuration ([43159e6](https://github.com/dptsi/its-go/commit/43159e65afc92479561520c3a6e3225a38d2b302))
+
+
 ## [1.9.9](https://github.com/dptsi/its-go/compare/v1.9.8...v1.9.9) (2025-09-25)
 
 
