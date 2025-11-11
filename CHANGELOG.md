@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.11](https://github.com/dptsi/its-go/compare/v1.9.10...v1.9.11) (2025-09-25)
+
+
+### Features
+
+* Fix typo on default value for timezone ([d351117](https://github.com/dptsi/its-go/commit/d3511176f15b0d0d0f6f41033c0f6d27e06387da))
+
 ## [1.9.10](https://github.com/dptsi/its-go/compare/v1.9.9...v1.9.10) (2025-09-25)
 
 
