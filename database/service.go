@@ -78,6 +78,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 	// set default timezone if not provided
 	if cfg.Timezone == "" {
 		cfg.Timezone = "Asia/Jakarta"
+	}
 	if cfg.TransportEncrypt == "" {
 		cfg.TransportEncrypt = DefaultTransportEncrypt
 	}
