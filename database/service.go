@@ -28,6 +28,7 @@ type ConnectionConfig struct {
 	Host     string
 	Port     string
 	Database string
+	Timezone string
 
 	// not used on `sqlite` driver
 	TrustServerCertificate string
@@ -74,6 +75,9 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		return nil, fmt.Errorf("database driver is empty, supported drivers are [sqlite, sqlserver, postgres]")
 	}
 
+	// set default timezone if not provided
+	if cfg.Timezone == "" {
+		cfg.Timezone = "Asia/Jakarta"
 	if cfg.TransportEncrypt == "" {
 		cfg.TransportEncrypt = DefaultTransportEncrypt
 	}
@@ -209,6 +213,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 			fmt.Sprintf("user=%s", cfg.User),
 			fmt.Sprintf("password=%s", cfg.Password),
 			fmt.Sprintf("dbname=%s", cfg.Database),
+			fmt.Sprintf("TimeZone=%s", cfg.Timezone),
 			fmt.Sprintf("sslmode=%s", sslmode),
 		}
 
