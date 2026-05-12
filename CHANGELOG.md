@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.12](https://github.com/dptsi/its-go/compare/v1.9.11...v1.9.12) (2025-09-25)
+
+
+### Features
+
+* add connection pool configuration options ([64c8516](https://github.com/dptsi/its-go/commit/64c8516a1e29ee09c49ba7036fcf247bd4be8faf))
+
 ## [1.9.11](https://github.com/dptsi/its-go/compare/v1.9.10...v1.9.11) (2025-09-25)
 
 
