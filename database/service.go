@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -17,8 +18,12 @@ type Service struct {
 }
 
 const (
-	DefaultTrustServerCertificate string = "true"
-	DefaultTransportEncrypt       string = "enabled"
+	DefaultTrustServerCertificate string        = "true"
+	DefaultTransportEncrypt       string        = "enabled"
+	DefaultMaxOpenConns           int           = 20
+	DefaultMaxIdleConns           int           = 5
+	DefaultConnMaxLifetime        time.Duration = time.Hour
+	DefaultConnMaxIdleTime        time.Duration = 30 * time.Minute
 )
 
 type ConnectionConfig struct {
@@ -35,6 +40,12 @@ type ConnectionConfig struct {
 
 	// not used on `sqlite` driver
 	TransportEncrypt string
+
+	// Connection pool settings (optional, uses defaults if not set)
+	MaxOpenConns    int
+	MaxIdleConns    int
+	ConnMaxLifetime time.Duration
+	ConnMaxIdleTime time.Duration
 }
 
 type Config struct {
@@ -98,6 +109,9 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		if err != nil {
 			return nil, fmt.Errorf("SQLite connection error: %w", err)
 		}
+
+		configureConnectionPool(db, cfg)
+
 		return db, nil
 	case "sqlserver":
 		/**
@@ -167,6 +181,9 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		if err != nil {
 			return nil, fmt.Errorf("SQL Server connection error: %w", err)
 		}
+
+		configureConnectionPool(db, cfg)
+
 		return db, nil
 
 	case "postgres":
@@ -227,6 +244,9 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		if err != nil {
 			return nil, fmt.Errorf("PostgreSQL connection error: %w", err)
 		}
+
+		configureConnectionPool(db, cfg)
+
 		return db, nil
 	default:
 		return nil, fmt.Errorf("unknown database driver %s, supported drivers are [sqlite, sqlserver, postgres]", cfg.Driver)
@@ -240,4 +260,55 @@ func (m *Service) GetDatabase(name string) *Database {
 
 func (m *Service) GetDefault() *Database {
 	return m.databases[DefaultDatabaseName]
+}
+
+func configureConnectionPool(db *Database, cfg ConnectionConfig) {
+	// Get the underlying *sql.DB connection from GORM
+	// See: https://gorm.io/docs/connecting_to_the_database.html#Connection-Pool
+	sqlDB, err := db.DB()
+	if err != nil {
+		return
+	}
+
+	// Determine pool settings, preferring config values over defaults
+	maxOpenConns := cfg.MaxOpenConns
+	if maxOpenConns <= 0 {
+		maxOpenConns = DefaultMaxOpenConns
+	}
+
+	maxIdleConns := cfg.MaxIdleConns
+	if maxIdleConns <= 0 {
+		maxIdleConns = DefaultMaxIdleConns
+	}
+
+	// Ensure MaxIdleConns does not exceed MaxOpenConns
+	if maxIdleConns > maxOpenConns {
+		maxIdleConns = maxOpenConns
+	}
+
+	connMaxLifetime := cfg.ConnMaxLifetime
+	if connMaxLifetime <= 0 {
+		connMaxLifetime = DefaultConnMaxLifetime
+	}
+
+	connMaxIdleTime := cfg.ConnMaxIdleTime
+	if connMaxIdleTime <= 0 {
+		connMaxIdleTime = DefaultConnMaxIdleTime
+	}
+
+	// Configure connection pool
+	// SetMaxOpenConns sets the maximum number of open connections to the database.
+	sqlDB.SetMaxOpenConns(maxOpenConns)
+
+	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+	// It must not exceed MaxOpenConns to maintain correct pool behavior.
+	sqlDB.SetMaxIdleConns(maxIdleConns)
+
+	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+	// This helps prevent connection staleness and resource leaks.
+	sqlDB.SetConnMaxLifetime(connMaxLifetime)
+
+	// SetConnMaxIdleTime sets the maximum amount of time a connection may be idle.
+	// Connections that exceed this duration will be closed and removed from the pool.
+	sqlDB.SetConnMaxIdleTime(connMaxIdleTime)
 }
