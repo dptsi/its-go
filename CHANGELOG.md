@@ -2,21 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [1.9.12](https://github.com/dptsi/its-go/compare/v1.9.11...v1.9.12) (2025-09-25)
+
+## [1.9.13](https://github.com/dptsi/its-go/compare/v1.9.12...v1.9.13) (2026-06-15)
+
+
+### Features
+
+* add PreferSimpleProtocol option for PostgreSQL connections ([bbccac3](https://github.com/dptsi/its-go/commit/bbccac30ede9da92e513baddca3c2e7f24493b80))
+
+
+## [1.9.12](https://github.com/dptsi/its-go/compare/v1.9.11...v1.9.12) (2026-06-12)
 
 
 ### Features
 
 * add connection pool configuration options ([64c8516](https://github.com/dptsi/its-go/commit/64c8516a1e29ee09c49ba7036fcf247bd4be8faf))
 
-## [1.9.11](https://github.com/dptsi/its-go/compare/v1.9.10...v1.9.11) (2025-09-25)
+
+## [1.9.11](https://github.com/dptsi/its-go/compare/v1.9.10...v1.9.11) (2025-11-11)
 
 
 ### Features
 
 * Fix typo on default value for timezone ([d351117](https://github.com/dptsi/its-go/commit/d3511176f15b0d0d0f6f41033c0f6d27e06387da))
 
-## [1.9.10](https://github.com/dptsi/its-go/compare/v1.9.9...v1.9.10) (2025-09-25)
+
+## [1.9.10](https://github.com/dptsi/its-go/compare/v1.9.9...v1.9.10) (2025-11-11)
 
 
 ### Features
@@ -25,7 +36,7 @@ All notable changes to this project will be documented in this file. See [commit
 * Add Database Transport Encrypt Option and Configuration ([43159e6](https://github.com/dptsi/its-go/commit/43159e65afc92479561520c3a6e3225a38d2b302))
 
 
-## [1.9.9](https://github.com/dptsi/its-go/compare/v1.9.8...v1.9.9) (2025-09-25)
+## [1.9.9](https://github.com/dptsi/its-go/compare/v1.9.8...v1.9.9) (2025-10-07)
 
 
 ### Features
