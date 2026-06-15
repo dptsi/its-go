@@ -41,6 +41,14 @@ type ConnectionConfig struct {
 	// not used on `sqlite` driver
 	TransportEncrypt string
 
+	// PreferSimpleProtocol disables implicit prepared statement usage.
+	// By default pgx automatically uses the extended protocol which caches
+	// prepared statements. This is incompatible with connection poolers like
+	// PgBouncer in transaction pooling mode. Set to true when connecting
+	// through PgBouncer or similar proxies.
+	// Only used on `postgres` driver.
+	PreferSimpleProtocol bool
+
 	// Connection pool settings (optional, uses defaults if not set)
 	MaxOpenConns    int
 	MaxIdleConns    int
@@ -240,7 +248,10 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		}
 
 		dsn := strings.Join(params, " ")
-		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		db, err := gorm.Open(postgres.New(postgres.Config{
+			DSN:                  dsn,
+			PreferSimpleProtocol: cfg.PreferSimpleProtocol,
+		}), &gorm.Config{})
 		if err != nil {
 			return nil, fmt.Errorf("PostgreSQL connection error: %w", err)
 		}
