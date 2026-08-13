@@ -10,12 +10,14 @@ import (
 type ApplicationServices struct {
 	Auth        AuthService
 	ActivityLog ActivityLogService
+	Cache       CacheService
 	Crypt       CryptService
 	Database    DatabaseService
 	Event       EventService
 	Logging     LoggingService
 	Middleware  MiddlewareService
 	Module      ModuleService
+	Redis       RedisService
 	Session     SessionService
 	WebEngine   *web.Engine
 }
