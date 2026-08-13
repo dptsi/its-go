@@ -8,6 +8,7 @@ import (
 	"github.com/dptsi/its-go/activitylog"
 	"github.com/dptsi/its-go/app"
 	"github.com/dptsi/its-go/auth"
+	"github.com/dptsi/its-go/cache"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/database"
 	"github.com/dptsi/its-go/event"
@@ -15,6 +16,7 @@ import (
 	"github.com/dptsi/its-go/http/middleware"
 	"github.com/dptsi/its-go/logging"
 	"github.com/dptsi/its-go/module"
+	"github.com/dptsi/its-go/redis"
 	"github.com/dptsi/its-go/sentry"
 	"github.com/dptsi/its-go/sessions"
 	"github.com/dptsi/its-go/sessions/storage"
@@ -72,6 +74,26 @@ func LoadProviders(application contracts.Application) error {
 
 	app.Bind(application, "database.service", func(application contracts.Application) (contracts.DatabaseService, error) {
 		return database.NewService(dbConfig)
+	})
+
+	app.Bind(application, "redis.service", func(application contracts.Application) (contracts.RedisService, error) {
+		redisConfig, ok := config["redis"].(redis.Config)
+		if !ok {
+			return redis.NewService(redis.Config{})
+		}
+		return redis.NewService(redisConfig)
+	})
+
+	app.Bind(application, "cache.service", func(application contracts.Application) (contracts.CacheService, error) {
+		redisService, err := app.Make[contracts.RedisService](application, "redis.service")
+		if err != nil || redisService == nil {
+			svc := cache.NewService(nil)
+			cache.SetDefault(svc)
+			return svc, nil
+		}
+		svc := cache.NewService(redisService.GetDefault())
+		cache.SetDefault(svc)
+		return svc, nil
 	})
 
 	app.Bind(application, "logging.service", func(application contracts.Application) (contracts.LoggingService, error) {

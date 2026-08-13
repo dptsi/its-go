@@ -53,6 +53,10 @@ func registerMiddlewares(application contracts.Application) error {
 	service.Register("sentry", func(application contracts.Application) (contracts.Middleware, error) {
 		return middleware.NewSentryGin(app.MustMake[contracts.SentryService](application, "sentry.service"))
 	})
+	service.Register("cache", func(application contracts.Application) (contracts.Middleware, error) {
+		cacheService, _ := app.Make[contracts.CacheService](application, "cache.service")
+		return middleware.NewCache(cacheService), nil
+	})
 
 	return nil
 }
