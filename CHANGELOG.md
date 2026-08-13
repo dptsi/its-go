@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
 
+## [1.9.14](https://github.com/dptsi/its-go/compare/v1.9.13...v1.9.14) (2026-08-13)
+
+
+### Features
+
+* implement cache service with Redis support ([1c98836](https://github.com/dptsi/its-go/commit/1c988368f9cc6f6c346877802376c33318527330))
+
+
 ## [1.9.13](https://github.com/dptsi/its-go/compare/v1.9.12...v1.9.13) (2026-06-15)
 
 
