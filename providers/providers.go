@@ -85,13 +85,18 @@ func LoadProviders(application contracts.Application) error {
 	})
 
 	app.Bind(application, "cache.service", func(application contracts.Application) (contracts.CacheService, error) {
+		cacheConfig := cache.Config{}
+		if cfg, ok := config["cache"].(cache.Config); ok {
+			cacheConfig = cfg
+		}
+
 		redisService, err := app.Make[contracts.RedisService](application, "redis.service")
 		if err != nil || redisService == nil {
-			svc := cache.NewService(nil)
+			svc := cache.NewServiceWithConfig(nil, cacheConfig)
 			cache.SetDefault(svc)
 			return svc, nil
 		}
-		svc := cache.NewService(redisService.GetDefault())
+		svc := cache.NewServiceWithConfig(redisService.GetDefault(), cacheConfig)
 		cache.SetDefault(svc)
 		return svc, nil
 	})

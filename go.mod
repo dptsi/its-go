@@ -1,6 +1,6 @@
 module github.com/dptsi/its-go
 
-go 1.24
+go 1.25.0
 
 require (
 	cloud.google.com/go/firestore v1.14.0
@@ -15,6 +15,7 @@ require (
 	github.com/samber/do v1.6.0
 	github.com/stoewer/go-strcase v1.3.0
 	golang.org/x/oauth2 v0.16.0
+	golang.org/x/sync v0.22.0
 	google.golang.org/grpc v1.56.1
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/driver/sqlite v1.5.4
@@ -67,7 +68,6 @@ require (
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
