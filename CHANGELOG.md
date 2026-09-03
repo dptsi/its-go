@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.15](https://github.com/dptsi/its-go/compare/v1.9.14...v1.9.15) (2026-09-03)
+
+
+### Features
+
+* add Laravel-style cache features ([ada19ca](https://github.com/dptsi/its-go/commit/ada19ca9a180d490b913e61528118f73570e4f78))
 
 ## [1.9.14](https://github.com/dptsi/its-go/compare/v1.9.13...v1.9.14) (2026-08-13)
 
