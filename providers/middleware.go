@@ -1,9 +1,8 @@
 package providers
 
 import (
-	"fmt"
-
 	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/http"
 	"github.com/dptsi/its-go/http/middleware"
@@ -13,11 +12,11 @@ func registerMiddlewares(application contracts.Application) error {
 	config := application.Config()
 	corsConfig, ok := config["cors"].(http.CorsConfig)
 	if !ok {
-		return fmt.Errorf("cors config is not available")
+		return errors.Errorf("cors config is not available")
 	}
 	csrfConfig, ok := config["csrf"].(http.CSRFConfig)
 	if !ok {
-		return fmt.Errorf("csrf config is not available")
+		return errors.Errorf("csrf config is not available")
 	}
 	service := application.Services().Middleware
 

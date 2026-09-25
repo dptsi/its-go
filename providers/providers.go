@@ -7,6 +7,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/dptsi/its-go/activitylog"
 	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/auth"
 	"github.com/dptsi/its-go/cache"
 	"github.com/dptsi/its-go/contracts"
@@ -27,29 +28,29 @@ func LoadProviders(application contracts.Application) error {
 	config := application.Config()
 	// cryptConfig, ok := config["crypt"].(crypt.Config)
 	// if !ok {
-	// 	return fmt.Errorf("crypt config is not available")
+	// 	return errors.Errorf("crypt config is not available")
 	// }
 	dbConfig, ok := config["database"].(database.Config)
 	if !ok {
-		return fmt.Errorf("database config is not available")
+		return errors.Errorf("database config is not available")
 	}
 	middlewareConfig, ok := config["middleware"].(middleware.Config)
 	if !ok {
-		return fmt.Errorf("middleware config is not available")
+		return errors.Errorf("middleware config is not available")
 	}
 	sessionsConfig, ok := config["sessions"].(sessions.Config)
 	if !ok {
-		return fmt.Errorf("sessions config is not available")
+		return errors.Errorf("sessions config is not available")
 	}
 	webConfig, ok := config["web"].(web.Config)
 	if !ok {
-		return fmt.Errorf("web config is not available")
+		return errors.Errorf("web config is not available")
 	}
 
 	app.Bind(application, "firestore.client", func(application contracts.Application) (*firestore.Client, error) {
 		config, ok := config["firestore"].(_firestore.Config)
 		if !ok {
-			return nil, fmt.Errorf("firestore config is not available")
+			return nil, errors.Errorf("firestore config is not available")
 		}
 		if config.DatabaseId != "" {
 			return firestore.NewClientWithDatabase(application.Context(), config.ProjectId, config.DatabaseId)
@@ -111,7 +112,7 @@ func LoadProviders(application contracts.Application) error {
 		// 	return nil, err
 		// }
 		// if len([]byte(key)) != 32 {
-		// 	return nil, fmt.Errorf("key length must be 32 bytes. generate key using `go run script/script.go key:generate`")
+		// 	return nil, errors.Errorf("key length must be 32 bytes. generate key using `go run script/script.go key:generate`")
 		// }
 
 		return nil, nil
@@ -144,7 +145,7 @@ func LoadProviders(application contracts.Application) error {
 		storageKey := fmt.Sprintf("sessions.storage.%s", sessionsConfig.Storage)
 		storage, err := app.Make[contracts.SessionStorage](application, storageKey)
 		if err != nil {
-			return nil, fmt.Errorf("session service: failed to configure storage \"%s\": %w", sessionsConfig.Storage, err)
+			return nil, errors.Errorf("session service: failed to configure storage \"%s\": %w", sessionsConfig.Storage, err)
 		}
 
 		service, err := sessions.NewService(

@@ -27,7 +27,7 @@ func (a *UserHasRole) Handle(param interface{}) web.HandlerFunc {
 	return func(ctx *web.Context) {
 		userHasRoleParam, ok := param.(UserHasRoleParam)
 		if !ok {
-			ctx.Error(fmt.Errorf("user has role middleware: handle: invalid parameter type"))
+			ctx.Error(errors.Errorf("user has role middleware: handle: invalid parameter type"))
 			ctx.Abort()
 			return
 		}

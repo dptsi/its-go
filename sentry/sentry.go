@@ -1,11 +1,11 @@
 package sentry
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 )
 
@@ -80,7 +80,7 @@ func loadConfigFromEnv() (*contracts.SentryConfig, error) {
 
 	dsn := os.Getenv("SENTRY_DSN")
 	if enabled && dsn == "" {
-		return nil, fmt.Errorf("SENTRY_DSN cannot be empty")
+		return nil, errors.Errorf("SENTRY_DSN cannot be empty")
 	}
 
 	tracingEnabled, err := strconv.ParseBool(os.Getenv("SENTRY_ENABLE_TRACING"))

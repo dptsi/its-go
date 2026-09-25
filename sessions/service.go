@@ -1,10 +1,9 @@
 package sessions
 
 import (
-	"errors"
-	"fmt"
 	"net/http"
 
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/web"
 )
@@ -56,7 +55,7 @@ func NewService(storage contracts.SessionStorage, writer contracts.SessionCookie
 func (s *Service) Get(ctx *web.Context, key string) (interface{}, error) {
 	data, err := s.get(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("session service: get: %w", err)
+		return nil, errors.Errorf("session service: get: %w", err)
 	}
 
 	value, exists := data.Get(key)
@@ -70,7 +69,7 @@ func (s *Service) Get(ctx *web.Context, key string) (interface{}, error) {
 func (s *Service) Put(ctx *web.Context, key string, value interface{}) error {
 	data, err := s.get(ctx)
 	if err != nil {
-		return fmt.Errorf("session service: put: %w", err)
+		return errors.Errorf("session service: put: %w", err)
 	}
 
 	data.Set(key, value)
@@ -81,7 +80,7 @@ func (s *Service) Put(ctx *web.Context, key string, value interface{}) error {
 func (s *Service) Delete(ctx *web.Context, key string) error {
 	data, err := s.get(ctx)
 	if err != nil {
-		return fmt.Errorf("session service: delete: %w", err)
+		return errors.Errorf("session service: delete: %w", err)
 	}
 
 	data.Delete(key)
@@ -92,7 +91,7 @@ func (s *Service) Delete(ctx *web.Context, key string) error {
 func (s *Service) Clear(ctx *web.Context) error {
 	data, err := s.get(ctx)
 	if err != nil {
-		return fmt.Errorf("session service: clear: %w", err)
+		return errors.Errorf("session service: clear: %w", err)
 	}
 
 	data.Clear()
@@ -103,7 +102,7 @@ func (s *Service) Clear(ctx *web.Context) error {
 func (s *Service) Regenerate(ctx *web.Context) error {
 	data, err := s.get(ctx)
 	if err != nil {
-		return fmt.Errorf("session service: regenerate: %w", err)
+		return errors.Errorf("session service: regenerate: %w", err)
 	}
 
 	if err := s.storage.Delete(ctx, data.Id()); err != nil {
@@ -122,7 +121,7 @@ func (s *Service) Regenerate(ctx *web.Context) error {
 func (s *Service) Invalidate(ctx *web.Context) error {
 	data, err := s.get(ctx)
 	if err != nil {
-		return fmt.Errorf("session service: invalidate: %w", err)
+		return errors.Errorf("session service: invalidate: %w", err)
 	}
 
 	if err := s.storage.Delete(ctx, data.Id()); err != nil {
@@ -143,7 +142,7 @@ func (s *Service) Invalidate(ctx *web.Context) error {
 func (s *Service) RegenerateToken(ctx *web.Context) error {
 	data, err := s.get(ctx)
 	if err != nil {
-		return fmt.Errorf("session service: regenerate token: %w", err)
+		return errors.Errorf("session service: regenerate token: %w", err)
 	}
 
 	data.RegenerateCSRFToken()
@@ -167,7 +166,7 @@ func (s *Service) updateToContextAndStorage(ctx *web.Context, data *Data) error 
 func (s *Service) IsTokenMatch(ctx *web.Context, token string) (bool, error) {
 	data, err := s.get(ctx)
 	if err != nil {
-		return false, fmt.Errorf("session service: is token match: %w", err)
+		return false, errors.Errorf("session service: is token match: %w", err)
 	}
 
 	return data.CSRFToken() == token, nil
@@ -177,7 +176,7 @@ func (s *Service) get(ctx *web.Context) (*Data, error) {
 	data := s.getFromContext(ctx)
 
 	if data == nil {
-		return nil, fmt.Errorf("session data not available, do you forgot to execute Start()")
+		return nil, errors.Errorf("session data not available, do you forgot to execute Start()")
 	}
 
 	return data, nil

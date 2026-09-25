@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/web"
 	"github.com/getsentry/sentry-go"
@@ -40,7 +41,7 @@ func (s *SentryGin) Handle(interface{}) web.HandlerFunc {
 		EnableTracing:    service.IsTracingEnabled(),
 		TracesSampleRate: service.GetTracesSampleRate(),
 	}); err != nil {
-		panic(fmt.Errorf("sentry SDK initialization failed: %w", err))
+		panic(errors.Errorf("sentry SDK initialization failed: %w", err))
 	}
 
 	middleware := sentrygin.New(sentrygin.Options{

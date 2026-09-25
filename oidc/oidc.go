@@ -2,11 +2,10 @@ package oidc
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/web"
 	"github.com/google/uuid"
@@ -88,7 +87,7 @@ func (c *Client) RedirectURL(ctx *web.Context) (string, error) {
 	if c.isPKCEEnabled {
 		codeVerifier := oauth2.GenerateVerifier()
 		if err := c.sessionService.Put(ctx, codeVerifierKey, codeVerifier); err != nil {
-			return "", fmt.Errorf("RedirectURL: %w", err)
+			return "", errors.Errorf("RedirectURL: %w", err)
 		}
 		authCodeOptions = append(authCodeOptions, oauth2.S256ChallengeOption(codeVerifier))
 	}
@@ -96,7 +95,7 @@ func (c *Client) RedirectURL(ctx *web.Context) (string, error) {
 	if c.needToVerifyNonce {
 		nonce := uuid.NewString()
 		if err := c.sessionService.Put(ctx, nonceKey, nonce); err != nil {
-			return "", fmt.Errorf("RedirectURL: %w", err)
+			return "", errors.Errorf("RedirectURL: %w", err)
 		}
 		authCodeOptions = append(authCodeOptions, oauth2.SetAuthURLParam("nonce", nonce))
 	}
@@ -105,7 +104,7 @@ func (c *Client) RedirectURL(ctx *web.Context) (string, error) {
 	if c.needToVerifyState {
 		state = uuid.NewString()
 		if err := c.sessionService.Put(ctx, stateKey, state); err != nil {
-			return "", fmt.Errorf("RedirectURL: %w", err)
+			return "", errors.Errorf("RedirectURL: %w", err)
 		}
 	}
 
@@ -117,13 +116,13 @@ func (c *Client) RedirectURL(ctx *web.Context) (string, error) {
 
 func (c *Client) ExchangeCodeForToken(ctx *web.Context, code string, state string) (*oauth2.Token, *oidc.IDToken, error) {
 	if err := c.verifyState(ctx, state); c.needToVerifyState && err != nil {
-		return nil, nil, fmt.Errorf("unable to exchange code: %w", err)
+		return nil, nil, errors.Errorf("unable to exchange code: %w", err)
 	}
 
 	authCodeOptions := make([]oauth2.AuthCodeOption, 0)
 	codeVerifier, err := c.GetCodeVerifierAndRemoveFromSession(ctx)
 	if c.isPKCEEnabled && err != nil {
-		return nil, nil, fmt.Errorf("unable to exchange code: %w", err)
+		return nil, nil, errors.Errorf("unable to exchange code: %w", err)
 	}
 	if c.isPKCEEnabled {
 		authCodeOptions = append(authCodeOptions, oauth2.VerifierOption(codeVerifier))
@@ -131,7 +130,7 @@ func (c *Client) ExchangeCodeForToken(ctx *web.Context, code string, state strin
 
 	token, err := c.oauthConfig.Exchange(ctx, code, authCodeOptions...)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to exchange code: %w", err)
+		return nil, nil, errors.Errorf("unable to exchange code: %w", err)
 	}
 	rawIDToken, ok := token.Extra("id_token").(string)
 	if !ok {
@@ -140,7 +139,7 @@ func (c *Client) ExchangeCodeForToken(ctx *web.Context, code string, state strin
 
 	IDToken, err := c.parseAndVerifyIDToken(ctx, rawIDToken)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to exchange code: %w", err)
+		return nil, nil, errors.Errorf("unable to exchange code: %w", err)
 	}
 
 	if c.needToVerifyNonce {
@@ -148,7 +147,7 @@ func (c *Client) ExchangeCodeForToken(ctx *web.Context, code string, state strin
 	}
 
 	if err := c.sessionService.Put(ctx, idTokenKey, rawIDToken); err != nil {
-		return nil, nil, fmt.Errorf("unable to exchange code: %w", err)
+		return nil, nil, errors.Errorf("unable to exchange code: %w", err)
 	}
 
 	return token, IDToken, nil
@@ -179,7 +178,7 @@ func (c *Client) RPInitiatedLogout(ctx *web.Context, postLogoutRedirectURI strin
 		EndSessionEndpoint string `json:"end_session_endpoint"`
 	}
 	if err := c.provider.Claims(&claims); err != nil {
-		return "", fmt.Errorf("rp initiated logout: get provider claims: %w", err)
+		return "", errors.Errorf("rp initiated logout: get provider claims: %w", err)
 	}
 	endSessionEndpoint := claims.EndSessionEndpoint
 	if endSessionEndpoint == "" {
@@ -187,7 +186,7 @@ func (c *Client) RPInitiatedLogout(ctx *web.Context, postLogoutRedirectURI strin
 	}
 	req, err := http.NewRequest("GET", endSessionEndpoint, nil)
 	if err != nil {
-		return "", fmt.Errorf("rp initiated logout: make request: %w", err)
+		return "", errors.Errorf("rp initiated logout: make request: %w", err)
 	}
 	q := req.URL.Query()
 

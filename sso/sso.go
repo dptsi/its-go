@@ -3,11 +3,10 @@ package sso
 import (
 	"context"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"io"
 	"net/http"
 
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/models"
 	"github.com/dptsi/its-go/oidc"
 	"github.com/dptsi/its-go/web"
@@ -107,11 +106,11 @@ func NewSso(appCfg map[string]interface{}, client *oidc.Client) *Sso {
 func (s *Sso) GetUserFromAuthorizationCode(ctx *web.Context, code string, state string) (*models.User, error) {
 	token, _, err := s.client.ExchangeCodeForToken(ctx, code, state)
 	if err != nil {
-		return nil, fmt.Errorf("get user from myits sso failed: %w", err)
+		return nil, errors.Errorf("get user from myits sso failed: %w", err)
 	}
 	userInfo, err := s.userInfo(ctx, s.client, oauth2.StaticTokenSource(token))
 	if err != nil {
-		return nil, fmt.Errorf("get user from myits sso failed: %w", err)
+		return nil, errors.Errorf("get user from myits sso failed: %w", err)
 	}
 
 	user := models.NewUser(userInfo.Sub)
@@ -167,18 +166,18 @@ func (s *Sso) userInfo(ctx context.Context, oidcClient *oidc.Client, tokenSource
 
 	req, err := http.NewRequest("GET", userInfoURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("oidc: create GET request: %w", err)
+		return nil, errors.Errorf("oidc: create GET request: %w", err)
 	}
 
 	token, err := tokenSource.Token()
 	if err != nil {
-		return nil, fmt.Errorf("oidc: get access token: %w", err)
+		return nil, errors.Errorf("oidc: get access token: %w", err)
 	}
 	token.SetAuthHeader(req)
 
 	resp, err := http.DefaultClient.Do(req.WithContext(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("oidc: user info request: %w", err)
+		return nil, errors.Errorf("oidc: user info request: %w", err)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
@@ -186,12 +185,12 @@ func (s *Sso) userInfo(ctx context.Context, oidcClient *oidc.Client, tokenSource
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: %s", resp.Status, body)
+		return nil, errors.Errorf("%s: %s", resp.Status, body)
 	}
 
 	var userInfo userInfoRaw
 	if err := json.Unmarshal(body, &userInfo); err != nil {
-		return nil, fmt.Errorf("oidc: failed to decode userinfo: %v", err)
+		return nil, errors.Errorf("oidc: failed to decode userinfo: %v", err)
 	}
 
 	return &userInfo, nil

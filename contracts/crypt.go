@@ -1,8 +1,8 @@
 package contracts
 
-import "fmt"
+import "github.com/dptsi/its-go/app/errors"
 
-var ErrInvalidCipherText = fmt.Errorf("invalid cipherText")
+var ErrInvalidCipherText = errors.Errorf("invalid cipherText")
 
 type CryptService interface {
 	Encrypt(plainText []byte) ([]byte, error)

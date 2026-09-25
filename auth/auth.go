@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/models"
 	"github.com/dptsi/its-go/web"
@@ -28,12 +29,12 @@ func NewService(application contracts.Application) *Service {
 func (s *Service) Login(ctx *web.Context, user *models.User) error {
 	key, guard, err := s.getGuard(ctx)
 	if err != nil {
-		return fmt.Errorf("%s: login: %w", errorPrefix, err)
+		return errors.Errorf("%s: login: %w", errorPrefix, err)
 	}
 
 	statefulGuard, ok := guard.(contracts.StatefulAuthGuard)
 	if !ok {
-		return fmt.Errorf("%s: guard \"%s\" doesn't support login because it is not a stateful guard", errorPrefix, key)
+		return errors.Errorf("%s: guard \"%s\" doesn't support login because it is not a stateful guard", errorPrefix, key)
 	}
 
 	return statefulGuard.Login(ctx, user)
@@ -43,12 +44,12 @@ func (s *Service) Logout(ctx *web.Context) error {
 	errorPrefix := fmt.Sprintf("%s: logout", errorPrefix)
 	key, guard, err := s.getGuard(ctx)
 	if err != nil {
-		return fmt.Errorf("%s: %w", errorPrefix, err)
+		return errors.Errorf("%s: %w", errorPrefix, err)
 	}
 
 	statefulGuard, ok := guard.(contracts.StatefulAuthGuard)
 	if !ok {
-		return fmt.Errorf("%s: guard \"%s\" doesn't support logout because it is not a stateful guard", errorPrefix, key)
+		return errors.Errorf("%s: guard \"%s\" doesn't support logout because it is not a stateful guard", errorPrefix, key)
 	}
 
 	return statefulGuard.Logout(ctx)
@@ -58,7 +59,7 @@ func (s *Service) User(ctx *web.Context) (*models.User, error) {
 	errorPrefix := fmt.Sprintf("%s: user", errorPrefix)
 	_, guard, err := s.getGuard(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", errorPrefix, err)
+		return nil, errors.Errorf("%s: %w", errorPrefix, err)
 	}
 
 	return guard.User(ctx), nil
@@ -71,7 +72,7 @@ func (s *Service) getGuard(ctx *web.Context) (key string, guard contracts.AuthGu
 	}
 	guard, err = app.Make[contracts.AuthGuard](s.application, s.getGuardKey(key))
 	if err != nil {
-		return key, nil, fmt.Errorf("auth guard \"%s\" not found", key)
+		return key, nil, errors.Errorf("auth guard \"%s\" not found", key)
 	}
 
 	return key, guard, nil
@@ -79,7 +80,7 @@ func (s *Service) getGuard(ctx *web.Context) (key string, guard contracts.AuthGu
 
 func (s *Service) RegisterGuard(name string, constructor contracts.AuthGuardConstructor) error {
 	if _, exists := s.guards[name]; exists {
-		return fmt.Errorf("auth service: register guard: guard \"%s\" already exist", name)
+		return errors.Errorf("auth service: register guard: guard \"%s\" already exist", name)
 	}
 	s.guards[name] = true
 
