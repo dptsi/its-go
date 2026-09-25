@@ -27,8 +27,8 @@ type AggregateVersionMismatchParam struct {
 // when the aggregate version in database is not the same
 // as the aggregate version in the command
 type AggregateVersionMismatch struct {
+	OopsError
 	code int
-	msg  string
 }
 
 func NewAggregateVersionMismatch(param AggregateVersionMismatchParam) AggregateVersionMismatch {
@@ -38,7 +38,7 @@ func NewAggregateVersionMismatch(param AggregateVersionMismatchParam) AggregateV
 	if param.Msg == "" {
 		param.Msg = "aggregate_version_mismatch"
 	}
-	return AggregateVersionMismatch{param.Code, param.Msg}
+	return AggregateVersionMismatch{newOopsError(param.Msg).(OopsError), param.Code}
 }
 
 func (e AggregateVersionMismatch) Code() int {
@@ -46,5 +46,5 @@ func (e AggregateVersionMismatch) Code() int {
 }
 
 func (e AggregateVersionMismatch) Error() string {
-	return e.msg
+	return e.OopsError.Error()
 }
