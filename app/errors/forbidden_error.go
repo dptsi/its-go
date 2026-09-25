@@ -41,10 +41,6 @@ func NewForbidden(param ForbiddenParam) Forbidden {
 	return Forbidden{newOopsError(param.Message).(OopsError), param.Details, param.ShowDetailsInProduction}
 }
 
-func (e Forbidden) Error() string {
-	return e.OopsError.Error()
-}
-
 func (e Forbidden) Details() string {
 	return e.details
 }

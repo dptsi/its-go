@@ -9,7 +9,7 @@ import (
 type OopsError = oops.OopsError
 
 func newOopsError(msg string) error {
-	return oops.CallerSkip(3).New(msg)
+	return oops.CallerSkip(2).New(msg)
 }
 
 func New(msg string) error {

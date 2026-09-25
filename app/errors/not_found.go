@@ -33,7 +33,3 @@ func NewNotFound(param NotFoundParam) NotFound {
 func (e NotFound) Code() int {
 	return e.code
 }
-
-func (e NotFound) Error() string {
-	return e.OopsError.Error()
-}

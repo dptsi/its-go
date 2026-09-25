@@ -22,6 +22,6 @@ func NewUnauthorized(param UnauthorizedParam) Unauthorized {
 	return Unauthorized{newOopsError("unauthorized").(OopsError), param.Code}
 }
 
-func (e Unauthorized) Error() string {
-	return e.OopsError.Error()
+func (e Unauthorized) Code() int {
+	return e.code
 }

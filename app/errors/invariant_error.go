@@ -48,7 +48,3 @@ func (e Invariant) Message() string {
 func (e Invariant) Details() string {
 	return e.details
 }
-
-func (e Invariant) Error() string {
-	return e.OopsError.Error()
-}

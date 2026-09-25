@@ -44,7 +44,3 @@ func NewAggregateVersionMismatch(param AggregateVersionMismatchParam) AggregateV
 func (e AggregateVersionMismatch) Code() int {
 	return e.code
 }
-
-func (e AggregateVersionMismatch) Error() string {
-	return e.OopsError.Error()
-}

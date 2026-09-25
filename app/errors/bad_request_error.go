@@ -54,7 +54,3 @@ func (e BadRequest) Message() string {
 func (e BadRequest) Data() map[string]interface{} {
 	return e.data
 }
-
-func (e BadRequest) Error() string {
-	return e.OopsError.Error()
-}
