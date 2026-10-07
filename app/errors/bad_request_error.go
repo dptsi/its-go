@@ -23,9 +23,9 @@ type BadRequestParam struct {
 // BadRequest is an error that occurs when the request is invalid
 // and cannot be processed
 type BadRequest struct {
-	code    int
-	message string
-	data    map[string]interface{}
+	OopsError
+	code int
+	data map[string]interface{}
 }
 
 func NewBadRequest(param BadRequestParam) BadRequest {
@@ -37,9 +37,9 @@ func NewBadRequest(param BadRequestParam) BadRequest {
 	}
 
 	return BadRequest{
-		code:    param.Code,
-		message: param.Message,
-		data:    param.Data,
+		OopsError: newOopsError(param.Message).(OopsError),
+		code:      param.Code,
+		data:      param.Data,
 	}
 }
 
@@ -48,13 +48,9 @@ func (e BadRequest) Code() int {
 }
 
 func (e BadRequest) Message() string {
-	return e.message
+	return e.OopsError.Error()
 }
 
 func (e BadRequest) Data() map[string]interface{} {
 	return e.data
-}
-
-func (e BadRequest) Error() string {
-	return e.message
 }

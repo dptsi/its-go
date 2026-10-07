@@ -26,7 +26,7 @@ func (a *UserHasPermission) Handle(param interface{}) web.HandlerFunc {
 	return func(ctx *web.Context) {
 		userHasPermissionParam, ok := param.(UserHasPermissionParam)
 		if !ok {
-			ctx.Error(fmt.Errorf("user has permission middleware: invalid parameter type"))
+			ctx.Error(errors.Errorf("user has permission middleware: invalid parameter type"))
 			ctx.Abort()
 			return
 		}

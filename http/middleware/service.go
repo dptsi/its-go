@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dptsi/its-go/app"
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/web"
 )
@@ -29,7 +30,7 @@ func NewService(app contracts.Application, cfg Config) *Service {
 func (s *Service) Use(name string, params interface{}) web.HandlerFunc {
 	m, err := app.Make[contracts.Middleware](s.app, s.getServiceKey(name))
 	if err != nil {
-		panic(fmt.Errorf("middleware %s not found", name))
+		panic(errors.Errorf("middleware %s not found", name))
 	}
 	return m.Handle(params)
 }
@@ -42,7 +43,7 @@ func (s *Service) Global() []web.HandlerFunc {
 
 func (s *Service) Register(name string, constructor contracts.MiddlewareConstructor) error {
 	if _, exists := s.middlewares[name]; exists {
-		return fmt.Errorf("middleware service: register: middleware \"%s\" already exist", name)
+		return errors.Errorf("middleware service: register: middleware \"%s\" already exist", name)
 	}
 	s.middlewares[name] = true
 	app.Bind[contracts.Middleware](s.app, s.getServiceKey(name), constructor)

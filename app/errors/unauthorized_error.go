@@ -11,6 +11,7 @@ type UnauthorizedParam struct {
 
 // Unauthorized is an error that occurs when the request is unauthorized
 type Unauthorized struct {
+	OopsError
 	code int
 }
 
@@ -18,9 +19,9 @@ func NewUnauthorized(param UnauthorizedParam) Unauthorized {
 	if param.Code == 0 {
 		param.Code = http.StatusUnauthorized
 	}
-	return Unauthorized{param.Code}
+	return Unauthorized{newOopsError("unauthorized").(OopsError), param.Code}
 }
 
-func (e Unauthorized) Error() string {
-	return "unauthorized"
+func (e Unauthorized) Code() int {
+	return e.code
 }

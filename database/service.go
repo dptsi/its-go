@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dptsi/its-go/app/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
@@ -79,7 +80,7 @@ func NewService(cfg Config) (*Service, error) {
 		}
 		db, err := createConnection(cfg)
 		if err != nil {
-			return nil, fmt.Errorf("database service: new service: error creating database with name \"%s\": %w", name, err)
+			return nil, errors.Errorf("database service: new service: error creating database with name \"%s\": %w", name, err)
 		}
 		databases[name] = db
 	}
@@ -91,7 +92,7 @@ func NewService(cfg Config) (*Service, error) {
 
 func createConnection(cfg ConnectionConfig) (*Database, error) {
 	if cfg.Driver == "" {
-		return nil, fmt.Errorf("database driver is empty, supported drivers are [sqlite, sqlserver, postgres]")
+		return nil, errors.Errorf("database driver is empty, supported drivers are [sqlite, sqlserver, postgres]")
 	}
 
 	// set default timezone if not provided
@@ -107,7 +108,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 	}
 
 	if cfg.TrustServerCertificate != "true" && cfg.TrustServerCertificate != "false" {
-		return nil, fmt.Errorf("invalid database TrustServerCertificate configuration: %s", cfg.TrustServerCertificate)
+		return nil, errors.Errorf("invalid database TrustServerCertificate configuration: %s", cfg.TrustServerCertificate)
 	}
 
 	switch cfg.Driver {
@@ -115,7 +116,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		// Contoh penggunaan adapter GORM dengan SQLite
 		db, err := gorm.Open(sqlite.Open(cfg.Database), &gorm.Config{})
 		if err != nil {
-			return nil, fmt.Errorf("SQLite connection error: %w", err)
+			return nil, errors.Errorf("SQLite connection error: %w", err)
 		}
 
 		configureConnectionPool(db, cfg)
@@ -172,7 +173,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 			// refer to comment id its-go/database/service.go-1-2
 			transportEncrypt = "&encrypt=false"
 		default:
-			return nil, fmt.Errorf("invalid database TransportEncrypt configuration: %s", cfg.TransportEncrypt)
+			return nil, errors.Errorf("invalid database TransportEncrypt configuration: %s", cfg.TransportEncrypt)
 		}
 
 		dsn := fmt.Sprintf(
@@ -187,7 +188,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		)
 		db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 		if err != nil {
-			return nil, fmt.Errorf("SQL Server connection error: %w", err)
+			return nil, errors.Errorf("SQL Server connection error: %w", err)
 		}
 
 		configureConnectionPool(db, cfg)
@@ -231,7 +232,7 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 		case "disable", "disabled", "false", "no", "0", "f":
 			sslmode = "disable"
 		default:
-			return nil, fmt.Errorf("invalid database TrustServerCertificate configuration: %s", cfg.TransportEncrypt)
+			return nil, errors.Errorf("invalid database TrustServerCertificate configuration: %s", cfg.TransportEncrypt)
 		}
 
 		params := []string{
@@ -253,14 +254,14 @@ func createConnection(cfg ConnectionConfig) (*Database, error) {
 			PreferSimpleProtocol: cfg.PreferSimpleProtocol,
 		}), &gorm.Config{})
 		if err != nil {
-			return nil, fmt.Errorf("PostgreSQL connection error: %w", err)
+			return nil, errors.Errorf("PostgreSQL connection error: %w", err)
 		}
 
 		configureConnectionPool(db, cfg)
 
 		return db, nil
 	default:
-		return nil, fmt.Errorf("unknown database driver %s, supported drivers are [sqlite, sqlserver, postgres]", cfg.Driver)
+		return nil, errors.Errorf("unknown database driver %s, supported drivers are [sqlite, sqlserver, postgres]", cfg.Driver)
 	}
 
 }

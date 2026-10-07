@@ -1,8 +1,6 @@
 package errors
 
 import (
-	"errors"
-
 	"github.com/go-playground/validator/v10"
 )
 
@@ -13,7 +11,7 @@ type ValidationErrorData struct {
 }
 
 // ErrValidation is an error that occurs when the request is invalid
-var ErrValidation = errors.New("validation_error")
+var ErrValidation = newOopsError("validation_error")
 
 // GetValidationErrors is a function that returns ValidationErrorData
 func GetValidationErrors(errs validator.ValidationErrors) map[string]ValidationErrorData {

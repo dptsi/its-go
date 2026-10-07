@@ -2,9 +2,9 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 	"github.com/dptsi/its-go/models"
 	"github.com/dptsi/its-go/web"
@@ -90,7 +90,7 @@ func (g *SessionGuard) SetUser(ctx *web.Context, user *models.User) {
 
 func (g *SessionGuard) Login(ctx *web.Context, user *models.User) error {
 	if err := g.updateSession(ctx, user); err != nil {
-		return fmt.Errorf("session guard: login: %w", err)
+		return errors.Errorf("session guard: login: %w", err)
 	}
 
 	return nil
@@ -98,7 +98,7 @@ func (g *SessionGuard) Login(ctx *web.Context, user *models.User) error {
 
 func (g *SessionGuard) Logout(ctx *web.Context) error {
 	if err := g.updateSession(ctx, nil); err != nil {
-		return fmt.Errorf("session guard: logout: %w", err)
+		return errors.Errorf("session guard: logout: %w", err)
 	}
 
 	return nil
@@ -119,7 +119,7 @@ func (g *SessionGuard) updateSession(ctx *web.Context, user *models.User) error 
 		}
 		userJson, err := json.Marshal(userSessionData)
 		if err != nil {
-			return fmt.Errorf("session guard: update session: %w", err)
+			return errors.Errorf("session guard: update session: %w", err)
 		}
 		return g.service.Put(ctx, "user", string(userJson))
 	}

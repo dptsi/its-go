@@ -22,8 +22,8 @@ type InvariantParam struct {
 
 // Invariant is an error that occurs when invariant is violated
 type Invariant struct {
+	OopsError
 	code    int
-	message string
 	details string
 }
 
@@ -34,7 +34,7 @@ func NewInvariant(param InvariantParam) Invariant {
 	if param.Message == "" {
 		param.Message = "invariant_error"
 	}
-	return Invariant{param.Code, param.Message, param.Details}
+	return Invariant{newOopsError(param.Message).(OopsError), param.Code, param.Details}
 }
 
 func (e Invariant) Code() int {
@@ -42,13 +42,9 @@ func (e Invariant) Code() int {
 }
 
 func (e Invariant) Message() string {
-	return e.message
+	return e.OopsError.Error()
 }
 
 func (e Invariant) Details() string {
 	return e.details
-}
-
-func (e Invariant) Error() string {
-	return e.message
 }

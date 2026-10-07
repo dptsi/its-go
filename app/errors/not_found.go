@@ -16,8 +16,8 @@ type NotFoundParam struct {
 
 // NotFound is an error that occurs when the resource is not found
 type NotFound struct {
+	OopsError
 	code int
-	msg  string
 }
 
 func NewNotFound(param NotFoundParam) NotFound {
@@ -27,13 +27,9 @@ func NewNotFound(param NotFoundParam) NotFound {
 	if param.Msg == "" {
 		param.Msg = "not_found"
 	}
-	return NotFound{param.Code, param.Msg}
+	return NotFound{newOopsError(param.Msg).(OopsError), param.Code}
 }
 
 func (e NotFound) Code() int {
 	return e.code
-}
-
-func (e NotFound) Error() string {
-	return e.msg
 }

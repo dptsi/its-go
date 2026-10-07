@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/dptsi/its-go/app/errors"
 	"github.com/dptsi/its-go/contracts"
 )
 
@@ -19,7 +20,7 @@ func NewScriptService() *Service {
 
 func (s *Service) AddCommand(c contracts.ScriptCommand) error {
 	if _, isExist := s.commands[c.Key()]; isExist {
-		return fmt.Errorf("command key %s for %s already exist", c.Key(), c.Name())
+		return errors.Errorf("command key %s for %s already exist", c.Key(), c.Name())
 	}
 	s.commands[c.Key()] = c
 
@@ -49,7 +50,7 @@ func (s *Service) Run() error {
 
 	command, exist := s.commands[args[0]]
 	if !exist {
-		return fmt.Errorf("command %s not found\nrun this script without arguments or with argument \"help\" to show help", args[0])
+		return errors.Errorf("command %s not found\nrun this script without arguments or with argument \"help\" to show help", args[0])
 	}
 	return command.Handler(args[1:])
 }
